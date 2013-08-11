@@ -13,7 +13,6 @@
 #define kVerticalTabBarButtonHeight 30.0
 #define kVerticalTabBarButtonMargin 8.0
 
-
 @interface FUIVerticalTabBarBadgeLabel : UILabel
 
 - (void)setPersistentBackgroundColor:(UIColor *)color;
@@ -96,13 +95,24 @@
     return _readingIndicatorView;
 }
 
++ (NSInteger)badgeCountForValue:(NSString *)value
+{
+    NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
+    [f setNumberStyle:NSNumberFormatterNoStyle];
+    NSNumber *badgeCount = [f numberFromString:value];
+    
+    return [badgeCount integerValue];
+}
+
 
 #pragma mark - Setter Methods
 
 - (void)setBadgeValue:(NSString *)value
 {
     _badgeValue = value;
-    [self setAccessoryView:[self badgeView]];
+    
+    UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? [self badgeView] : nil;
+    [self setAccessoryView:accessory];
 }
 
 - (void)setUnread:(BOOL)unread

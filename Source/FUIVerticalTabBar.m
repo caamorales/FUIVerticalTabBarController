@@ -9,6 +9,7 @@
 
 #import "FUIVerticalTabBar.h"
 #import "FUIVerticalTabBarButton.h"
+#import "NSObject+Tools.h"
 
 @implementation FUIVerticalTabBar
 
@@ -21,6 +22,7 @@
         self.separatorColor = [UIColor clearColor];
         self.allowsMultipleSelection = NO;
         self.allowsSelection = YES;
+        self.showsVerticalScrollIndicator = NO;
     }
     return self;
 }
@@ -84,11 +86,27 @@
 - (void)setSelectedItem:(UITabBarItem *)selectedItem
 {
     NSUInteger selectedItemIndex = [self.items indexOfObject:selectedItem];
-    
+
     if (selectedItemIndex != NSNotFound) {
         [self selectRowAtIndexPath:[NSIndexPath indexPathForRow:selectedItemIndex inSection:0]
                           animated:NO
-                    scrollPosition:UITableViewScrollPositionTop];
+                    scrollPosition:UITableViewScrollPositionNone];
+    }
+}
+
+- (void)setScrollMode:(FUIVerticalTabBarScrollMode)mode
+{
+    if (IS_IPHONE) _scrollMode = FUIVerticalTabBarScrollToFit;
+    else _scrollMode = mode;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    
+    UITouch *touch = [touches anyObject];
+    if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
+        [self.delegate tableView:self didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:touch.view.tag inSection:0]];
     }
 }
 
@@ -135,15 +153,17 @@
     button.imageView.highlightedImage = item.finishedSelectedImage;
     button.imageView.image = item.finishedUnselectedImage;
     button.textLabel.text = item.title;
-        
-    [button setUnread:item.badgeValue ? YES : NO];
+    button.contentView.tag = indexPath.row;
+    button.tag = indexPath.row;
+
+    [button setUnread:([FUIVerticalTabBarButton badgeCountForValue:item.badgeValue] > 0) ? YES : NO];
     [button setBadgeValue:item.badgeValue];
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)updateContentAtIndexPath:(NSIndexPath *)indexPath
 {
-    [super touchesBegan:touches withEvent:event];
-//    [self.delegate tableView:self willSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    FUIVerticalTabBarButton *button = (FUIVerticalTabBarButton *)[self cellForRowAtIndexPath:indexPath];
+    [self configureTarBarButton:button atIndexPath:indexPath];
 }
 
 @end

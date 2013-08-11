@@ -26,11 +26,14 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @property (nonatomic, strong) UIImage *selectionIndicatorImage;
 /** The scrolling mode of the TabBar table. */
 @property (nonatomic, assign) FUIVerticalTabBarScrollMode scrollMode;
-
+/**  */
 @property (nonatomic, strong) UIColor *unselectedTabColor;
+/**  */
 @property (nonatomic, strong) UIColor *selectedTabColor;
+/**  */
 @property (nonatomic, strong) UIColor *textColor;
 
 
+- (void)updateContentAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

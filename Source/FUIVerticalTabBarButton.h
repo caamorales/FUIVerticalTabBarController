@@ -20,4 +20,7 @@
 
 @property (nonatomic, assign) CGFloat height;
 
+
++ (NSInteger)badgeCountForValue:(NSString *)value;
+
 @end

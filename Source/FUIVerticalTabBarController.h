@@ -8,7 +8,6 @@
 //
 
 #import "FlatUIKit.h"
-//#import "DZCategories.h"
 #import "FUIVerticalTabBar.h"
 
 @protocol FUIVerticalTabBarControllerDelegate;
@@ -32,6 +31,10 @@
 @property (nonatomic, readwrite, assign) NSUInteger selectedIndex;
 /** The TabBar width. */
 @property (nonatomic, readwrite, assign) CGFloat tabBarWidth;
+/**  */
+@property (nonatomic, readwrite, assign) CGFloat tabBarHeaderHeight;
+/**  */
+@property (nonatomic, readwrite, assign) CGFloat tabBarButtonHeight;
 /**  */
 @property (nonatomic, readwrite, assign) CGFloat maximumWidth;
 /**  */
