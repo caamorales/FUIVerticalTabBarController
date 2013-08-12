@@ -9,7 +9,6 @@
 
 #import "FUIVerticalTabBar.h"
 #import "FUIVerticalTabBarButton.h"
-#import "NSObject+Tools.h"
 
 @implementation FUIVerticalTabBar
 
@@ -83,6 +82,12 @@
     [self reloadData];
 }
 
+- (void)setTextFont:(UIFont *)font
+{
+    _textFont = font;
+    [self reloadData];
+}
+
 - (void)setSelectedItem:(UITabBarItem *)selectedItem
 {
     NSUInteger selectedItemIndex = [self.items indexOfObject:selectedItem];
@@ -96,7 +101,7 @@
 
 - (void)setScrollMode:(FUIVerticalTabBarScrollMode)mode
 {
-    if (IS_IPHONE) _scrollMode = FUIVerticalTabBarScrollToFit;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _scrollMode = FUIVerticalTabBarScrollToFit;
     else _scrollMode = mode;
 }
 

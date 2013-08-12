@@ -7,7 +7,8 @@
 //  Licence: MIT-Licence
 //
 
-#import "FlatUIKit.h"
+#import <FlatUIKit/FlatUIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "FUIVerticalTabBar.h"
 
 @protocol FUIVerticalTabBarControllerDelegate;
@@ -44,17 +45,11 @@
 /**  */
 @property (nonatomic, strong) UIImage *headerImage;
 /**  */
-@property (nonatomic) BOOL shouldStartAnimated;
+@property (nonatomic) BOOL startAnimated;
 /**  */
-@property (nonatomic) BOOL shouldStartExpanded;
+@property (nonatomic) BOOL startExpanded;
 /**  */
-@property (nonatomic) BOOL shouldContractWhenSelecting;
-/**  */
-@property (nonatomic) BOOL paneDraggingEnabled;
-/**  */
-@property (nonatomic) BOOL paneTappingEnabled;
-/**  */
-@property (nonatomic, strong) UIToolbar *toolbar;
+@property (nonatomic, strong) UIToolbar *toolBar;
 
 
 /**
@@ -70,7 +65,8 @@
 */
 - (void)willRotateTabBar;
 
-- (void)switchMenu;
+/**  */
+- (void)switchMenu:(id)sender;
 
 @end
 
@@ -94,7 +90,13 @@
 */
 - (BOOL)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController;
 
-- (BOOL)verticalTabBarControllerShouldAllowPanning:(FUIVerticalTabBarController *)tabBarController;
+/**  */
+- (BOOL)verticalTabBarControllerCanMoveHorizontally:(FUIVerticalTabBarController *)tabBarController;
 
+/**  */
+- (BOOL)verticalTabBarControllerContractAfterTap:(FUIVerticalTabBarController *)tabBarController;
+
+/**  */
+- (BOOL)verticalTabBarControllerContractWhenSelecting:(FUIVerticalTabBarController *)tabBarController;
 
 @end

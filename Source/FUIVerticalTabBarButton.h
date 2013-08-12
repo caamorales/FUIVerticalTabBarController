@@ -7,20 +7,23 @@
 //  Licence: MIT-Licence
 //
 
-#import "FlatUIKit.h"
+#import <FlatUIKit/FlatUIKit.h>
 
 /**
  * @brief A custom tableview cell used for simulating an UITabBarItem behaviour.
 */
 @interface FUIVerticalTabBarButton : UITableViewCell
 
+/**  */
 @property (nonatomic, strong) UIColor *foregroundColor;
+/**  */
 @property (nonatomic, strong) NSString *badgeValue;
+/**  */
 @property (nonatomic, getter = isUnread) BOOL unread;
-
+/**  */
 @property (nonatomic, assign) CGFloat height;
 
-
+/**  */
 + (NSInteger)badgeCountForValue:(NSString *)value;
 
 @end

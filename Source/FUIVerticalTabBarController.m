@@ -9,8 +9,6 @@
 
 #import "FUIVerticalTabBarController.h"
 #import "FUIVerticalTabBarButton.h"
-#import <QuartzCore/QuartzCore.h>
-#import "NSObject+Tools.h"
 
 static CGFloat panningHorizontalPosition = 0;
 
@@ -26,10 +24,9 @@ static CGFloat panningHorizontalPosition = 0;
 {
     if (self = [super init])
     {
-        if (IS_IPHONE) {
-            _shouldStartAnimated = NO;
-            _shouldStartExpanded = YES;
-            _shouldContractWhenSelecting = YES;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            _startAnimated = NO;
+            _startExpanded = NO;
         }
     }
     return self;
@@ -78,14 +75,21 @@ static CGFloat panningHorizontalPosition = 0;
 {
     if (!_tabBar)
     {
-        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _tabBarWidth-1, self.view.bounds.size.height)];
+        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _tabBarWidth, self.view.bounds.size.height)];
         _tabBar.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin;
         _tabBar.delegate = self;
         _tabBar.canCancelContentTouches = YES;
         
-        UIImageView *headerImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _tabBarWidth, _tabBarHeaderHeight)];
-        headerImgView.backgroundColor = [UIColor clearColor];
-        _tabBar.tableHeaderView = headerImgView;
+        if (_headerImage) {
+            UIImageView *headerImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _headerImage.size.width, _headerImage.size.height+40.0)];
+            headerImgView.image = _headerImage;
+            headerImgView.contentMode = UIViewContentModeCenter;
+            _tabBar.tableHeaderView = headerImgView;
+        }
+        else {
+            UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _tabBarWidth, _tabBarHeaderHeight)];
+            _tabBar.tableHeaderView = headerView;
+        }
     }
     return _tabBar;
 }
@@ -127,6 +131,10 @@ static CGFloat panningHorizontalPosition = 0;
             if ([vc isKindOfClass:[UINavigationController class]]) {
                 UINavigationController *nc = (UINavigationController *)vc;
                 
+                UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+                tapGesture.delegate = self;
+                [nc.view addGestureRecognizer:tapGesture];
+                
                 UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanning:)];
                 panGesture.maximumNumberOfTouches = 1;
                 panGesture.minimumNumberOfTouches = 1;
@@ -141,17 +149,6 @@ static CGFloat panningHorizontalPosition = 0;
     // Sets the value for the first time as -1 for the viewController to load itself properly
     _selectedIndex = -1;
     self.selectedIndex = _selectedIndex;
-}
-
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([object isKindOfClass:[UITabBarItem class]]) {
-        
-        NSInteger buttonIndex = [_tabBar.items indexOfObject:object];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:buttonIndex inSection:0];
-        [_tabBar updateContentAtIndexPath:indexPath];
-    }
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
@@ -174,14 +171,14 @@ static CGFloat panningHorizontalPosition = 0;
         
         //// Set the expanded and contracted CGRect
         CGRect rect = CGRectZero;
-        if (_shouldStartExpanded) rect = [self expandedRect];
+        if (_startExpanded) rect = [self expandedRect];
         else rect = _expanded ? [self expandedRect] : [self contractedRect];
         
-        if (_shouldStartAnimated) {
-            _shouldStartAnimated = NO;
-            selectedViewController.view.frame = _shouldStartExpanded ? [self contractedRect] : [self expandedRect];
+        if (_startAnimated) {
+            _startAnimated = NO;
+            selectedViewController.view.frame = _startExpanded ? [self contractedRect] : [self expandedRect];
             
-            [UIView animateWithDuration:_shouldStartAnimated ? 0.3 : 0.0
+            [UIView animateWithDuration:_startAnimated ? 0.3 : 0.0
                              animations:^{selectedViewController.view.frame = rect;}];
         }
         else {
@@ -191,7 +188,7 @@ static CGFloat panningHorizontalPosition = 0;
         selectedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self.view addSubview:selectedViewController.view];
         
-        if (_shouldContractWhenSelecting && !_didSelect) {
+        if ([self.delegate verticalTabBarControllerContractWhenSelecting:self] && !_didSelect) {
             _didSelect = YES;
             [self performSelector:@selector(contractMenu) withObject:nil afterDelay:0.2];
         }
@@ -230,59 +227,52 @@ static CGFloat panningHorizontalPosition = 0;
         [self contractMenu];
     }
     
-    
-    if (_shouldStartExpanded) {
-        _shouldStartExpanded = NO;
+    if (_startExpanded) {
+        _startExpanded = NO;
         _expanded = YES;
     }
 }
 
 - (void)setTabBarWidth:(CGFloat)width
 {
-    if (IS_IPHONE) _tabBarWidth = self.view.frame.size.width-44.0;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _tabBarWidth = self.view.frame.size.width-44.0;
     else _tabBarWidth = width;
 }
 
 - (void)setTabBarHeaderHeight:(CGFloat)height
 {
-    if (IS_IPHONE) _tabBarHeaderHeight = 44.0;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _tabBarHeaderHeight = 44.0;
     else _tabBarHeaderHeight = height;
 }
 
 - (void)setMinimumWidth:(CGFloat)width
 {
-    if (IS_IPHONE) _minimumWidth = 0;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _minimumWidth = 0;
     else _minimumWidth = width;
 }
 
 - (void)setMaximumWidth:(CGFloat)width
 {
-    if (IS_IPHONE) _maximumWidth = self.view.frame.size.width-44.0;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _maximumWidth = self.view.frame.size.width-44.0;
     else _maximumWidth = width;
 }
 
-- (void)setShouldStartAnimated:(BOOL)animated
+- (void)setStartAnimated:(BOOL)animated
 {
-    if (IS_IPHONE) _shouldStartAnimated = NO;
-    else _shouldStartAnimated = animated;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _startAnimated = NO;
+    else _startAnimated = animated;
 }
 
-- (void)setShouldStartExpanded:(BOOL)expanded
+- (void)setStartExpanded:(BOOL)expanded
 {
-    if (IS_IPHONE) _shouldStartExpanded = NO;
-    else _shouldStartExpanded = expanded;
-}
-
-- (void)setShouldContractWhenSelecting:(BOOL)expanded
-{
-    if (IS_IPHONE) _shouldContractWhenSelecting = YES;
-    else _shouldContractWhenSelecting = expanded;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _startExpanded = NO;
+    else _startExpanded = expanded;
 }
 
 
 #pragma mark - FUIVerticalTabBarController methods
 
-- (void)switchMenu
+- (void)switchMenu:(id)sender;
 {
     if (_expanded) [self contractMenu];
     else [self expandMenu];
@@ -334,6 +324,10 @@ static CGFloat panningHorizontalPosition = 0;
 
 - (void)handlePanning:(UIPanGestureRecognizer *)panGesture
 {
+    if (![self.delegate verticalTabBarControllerCanMoveHorizontally:self]) {
+        return;
+    }
+    
     [self.view bringSubviewToFront:[panGesture view]];
     CGPoint newPoint = [panGesture translationInView:self.view];
     
@@ -369,9 +363,19 @@ static CGFloat panningHorizontalPosition = 0;
     }
 }
 
+- (void)handleTap:(UITapGestureRecognizer *)tapGesture
+{
+    if (![self.delegate verticalTabBarControllerContractAfterTap:self]) {
+        return;
+    }
+    
+    if ([tapGesture.view isEqual:self.selectedViewController.view] && _expanded == YES) {
+        [self contractMenu];
+    }
+}
+
 - (void)willRotateTabBar
 {
-//    [self.tabBar reloadData];
     self.tabBar.selectedItem = [self.tabBar.items objectAtIndex:_selectedIndex];
 }
 
@@ -417,6 +421,19 @@ static CGFloat panningHorizontalPosition = 0;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return _tabBarButtonHeight;
+}
+
+
+#pragma mark - NSKeyValueObserving (KVO) Methods
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([object isKindOfClass:[UITabBarItem class]]) {
+        
+        NSInteger buttonIndex = [_tabBar.items indexOfObject:object];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:buttonIndex inSection:0];
+        [_tabBar updateContentAtIndexPath:indexPath];
+    }
 }
 
 

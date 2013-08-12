@@ -36,9 +36,8 @@
         _verticalTabBarController.tabBarButtonHeight = 60.0;
         _verticalTabBarController.maximumWidth = 240.0;
         _verticalTabBarController.minimumWidth = 58.0;
-        _verticalTabBarController.shouldStartAnimated = YES;
-        _verticalTabBarController.shouldStartExpanded = YES;
-        _verticalTabBarController.shouldContractWhenSelecting = NO;
+        _verticalTabBarController.startAnimated = YES;
+        _verticalTabBarController.startExpanded = NO;
         _verticalTabBarController.delegate = self;
         
         _verticalTabBarController.tabBar.backgroundColor = [UIColor slateDarkGray];
@@ -85,7 +84,17 @@
     return YES;
 }
 
-- (BOOL)verticalTabBarControllerShouldAllowPanning:(FUIVerticalTabBarController *)tabBarController
+- (BOOL)verticalTabBarControllerContractWhenSelecting:(FUIVerticalTabBarController *)tabBarController
+{
+    return YES;
+}
+
+- (BOOL)verticalTabBarControllerCanMoveHorizontally:(FUIVerticalTabBarController *)tabBarController
+{
+    return YES;
+}
+
+- (BOOL)verticalTabBarControllerContractAfterTap:(FUIVerticalTabBarController *)tabBarController
 {
     return YES;
 }

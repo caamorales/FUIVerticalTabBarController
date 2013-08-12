@@ -53,7 +53,6 @@
 		4F9FD6E817B858BC00166870 /* FUIVerticalTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9FD6E117B858BC00166870 /* FUIVerticalTabBar.m */; };
 		4F9FD6E917B858BC00166870 /* FUIVerticalTabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9FD6E317B858BC00166870 /* FUIVerticalTabBarButton.m */; };
 		4F9FD6EA17B858BC00166870 /* FUIVerticalTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9FD6E517B858BC00166870 /* FUIVerticalTabBarController.m */; };
-		4F9FD6EB17B858BC00166870 /* NSObject+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9FD6E717B858BC00166870 /* NSObject+Tools.m */; };
 		4F9FD71217B858E300166870 /* FUIAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9FD6EF17B858E300166870 /* FUIAlertView.m */; };
 		4F9FD71317B858E300166870 /* FUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9FD6F117B858E300166870 /* FUIButton.m */; };
 		4F9FD71417B858E300166870 /* FUICellBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9FD6F317B858E300166870 /* FUICellBackgroundView.m */; };
@@ -158,8 +157,6 @@
 		4F9FD6E317B858BC00166870 /* FUIVerticalTabBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FUIVerticalTabBarButton.m; path = ../../../Source/FUIVerticalTabBarButton.m; sourceTree = "<group>"; };
 		4F9FD6E417B858BC00166870 /* FUIVerticalTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FUIVerticalTabBarController.h; path = ../../../Source/FUIVerticalTabBarController.h; sourceTree = "<group>"; };
 		4F9FD6E517B858BC00166870 /* FUIVerticalTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FUIVerticalTabBarController.m; path = ../../../Source/FUIVerticalTabBarController.m; sourceTree = "<group>"; };
-		4F9FD6E617B858BC00166870 /* NSObject+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+Tools.h"; path = "../../../Source/NSObject+Tools.h"; sourceTree = "<group>"; };
-		4F9FD6E717B858BC00166870 /* NSObject+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+Tools.m"; path = "../../../Source/NSObject+Tools.m"; sourceTree = "<group>"; };
 		4F9FD6ED17B858E300166870 /* FlatUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlatUIKit.h; path = ../../../Source/FlatUIKit/Classes/ios/FlatUIKit.h; sourceTree = "<group>"; };
 		4F9FD6EE17B858E300166870 /* FUIAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FUIAlertView.h; path = ../../../Source/FlatUIKit/Classes/ios/FUIAlertView.h; sourceTree = "<group>"; };
 		4F9FD6EF17B858E300166870 /* FUIAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FUIAlertView.m; path = ../../../Source/FlatUIKit/Classes/ios/FUIAlertView.m; sourceTree = "<group>"; };
@@ -394,8 +391,6 @@
 				4F9FD6E317B858BC00166870 /* FUIVerticalTabBarButton.m */,
 				4F9FD6E417B858BC00166870 /* FUIVerticalTabBarController.h */,
 				4F9FD6E517B858BC00166870 /* FUIVerticalTabBarController.m */,
-				4F9FD6E617B858BC00166870 /* NSObject+Tools.h */,
-				4F9FD6E717B858BC00166870 /* NSObject+Tools.m */,
 				4F9FD6EC17B858D200166870 /* FlatUIKit */,
 			);
 			name = FUIVerticalTabBarController;
@@ -547,7 +542,6 @@
 				4F9FD6E817B858BC00166870 /* FUIVerticalTabBar.m in Sources */,
 				4F9FD6E917B858BC00166870 /* FUIVerticalTabBarButton.m in Sources */,
 				4F9FD6EA17B858BC00166870 /* FUIVerticalTabBarController.m in Sources */,
-				4F9FD6EB17B858BC00166870 /* NSObject+Tools.m in Sources */,
 				4F9FD71217B858E300166870 /* FUIAlertView.m in Sources */,
 				4F9FD71317B858E300166870 /* FUIButton.m in Sources */,
 				4F9FD71417B858E300166870 /* FUICellBackgroundView.m in Sources */,

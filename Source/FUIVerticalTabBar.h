@@ -7,7 +7,7 @@
 //  Licence: MIT-Licence
 //
 
-#import "FlatUIKit.h"
+#import <FlatUIKit/FlatUIKit.h>
 
 #define FUIVerticalTabBarIdentifier NSStringFromClass([FUIVerticalTabBarButton class])
 
@@ -32,8 +32,11 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @property (nonatomic, strong) UIColor *selectedTabColor;
 /**  */
 @property (nonatomic, strong) UIColor *textColor;
+/**  */
+@property (nonatomic, strong) UIFont *textFont;
 
 
+/**  */
 - (void)updateContentAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
