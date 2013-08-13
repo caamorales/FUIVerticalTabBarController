@@ -3,11 +3,12 @@
 //  FUIVerticalTabBarController
 //
 //  Created by Ignacio Romero Zurbuchen on 8/3/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //  Licence: MIT-Licence
 //
 
-#import <FlatUIKit/FlatUIKit.h>
+#import "FlatUIKit.h"
+//#import <FlatUIKit/FlatUIKit.h>
 
 /**
  * @brief A custom tableview cell used for simulating an UITabBarItem behaviour.
@@ -18,6 +19,10 @@
 @property (nonatomic, strong) UIColor *foregroundColor;
 /**  */
 @property (nonatomic, strong) NSString *badgeValue;
+/**  */
+@property (nonatomic, weak) UIColor *badgeTextColor;
+/**  */
+@property (nonatomic, weak) UIFont *badgeTextFont;
 /**  */
 @property (nonatomic, getter = isUnread) BOOL unread;
 /**  */

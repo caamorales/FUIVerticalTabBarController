@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>344402E8-6024-4BBE-BD8F-4AA34ACFAA6C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Sample</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2DA654F1-7999-4E1B-974D-F3769CC5999A</key>
+		<string>https://github.com/Grouper/FlatUIKit.git</string>
+		<key>D17879D2-51AE-4E21-AD95-78DADAA22DF0</key>
+		<string>https://github.com/dzenbot/FUIVerticalTabBarController.git</string>
+		<key>FF71AE70-CF4E-49D9-97BE-9FEA07CB45F9</key>
+		<string>https://github.com/dzenbot/DZCategories.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Samples/SimpleMenu/Sample.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2DA654F1-7999-4E1B-974D-F3769CC5999A</key>
+		<string>../../../../Source/FlatUIKit</string>
+		<key>D17879D2-51AE-4E21-AD95-78DADAA22DF0</key>
+		<string>../../../..</string>
+		<key>FF71AE70-CF4E-49D9-97BE-9FEA07CB45F9</key>
+		<string>../../../../../DZCategories</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/dzenbot/FUIVerticalTabBarController.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D17879D2-51AE-4E21-AD95-78DADAA22DF0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FF71AE70-CF4E-49D9-97BE-9FEA07CB45F9</string>
+			<key>IDESourceControlWCCName</key>
+			<string>DZCategories</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2DA654F1-7999-4E1B-974D-F3769CC5999A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>FlatUIKit</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D17879D2-51AE-4E21-AD95-78DADAA22DF0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>FUIVerticalTabBarController</string>
+		</dict>
+	</array>
+</dict>
+</plist>

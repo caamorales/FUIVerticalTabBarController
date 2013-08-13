@@ -3,7 +3,7 @@
 //  FUIVerticalTabBarController
 //
 //  Created by Ignacio Romero Zurbuchen on 8/3/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //  Licence: MIT-Licence
 //
 
@@ -49,7 +49,6 @@
         self.selectionStyle = UITableViewCellSelectionStyleBlue;
 
         self.textLabel.backgroundColor = [UIColor clearColor];
-        self.textLabel.font = [UIFont boldFlatFontOfSize:17.0];
     }
     return self;
 }
@@ -65,8 +64,8 @@
 - (FUIVerticalTabBarBadgeLabel *)badgeView
 {
     FUIVerticalTabBarBadgeLabel *badgeLabel = [[FUIVerticalTabBarBadgeLabel alloc] initWithFrame:CGRectZero];
-    badgeLabel.font = [UIFont boldFlatFontOfSize:15.0];
-    badgeLabel.textColor = self.textLabel.textColor;
+    badgeLabel.font = _badgeTextFont;
+    badgeLabel.textColor = _badgeTextColor;
     badgeLabel.highlightedTextColor = [UIColor whiteColor];
     badgeLabel.textAlignment = NSTextAlignmentCenter;
     [badgeLabel setPersistentBackgroundColor:self.backgroundColor];

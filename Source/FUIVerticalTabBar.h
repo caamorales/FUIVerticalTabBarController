@@ -3,11 +3,12 @@
 //  FUIVerticalTabBarController
 //
 //  Created by Ignacio Romero Zurbuchen on 8/3/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //  Licence: MIT-Licence
 //
 
-#import <FlatUIKit/FlatUIKit.h>
+#import "FlatUIKit.h"
+//#import <FlatUIKit/FlatUIKit.h>
 
 #define FUIVerticalTabBarIdentifier NSStringFromClass([FUIVerticalTabBarButton class])
 
@@ -34,6 +35,10 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @property (nonatomic, strong) UIColor *textColor;
 /**  */
 @property (nonatomic, strong) UIFont *textFont;
+/**  */
+@property (nonatomic, strong) UIColor *badgeTextColor;
+/**  */
+@property (nonatomic, strong) UIFont *badgeTextFont;
 
 
 /**  */

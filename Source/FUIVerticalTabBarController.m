@@ -3,7 +3,7 @@
 //  FUIVerticalTabBarController
 //
 //  Created by Ignacio Romero Zurbuchen on 8/3/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //  Licence: MIT-Licence
 //
 
@@ -75,7 +75,7 @@ static CGFloat panningHorizontalPosition = 0;
 {
     if (!_tabBar)
     {
-        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _tabBarWidth, self.view.bounds.size.height)];
+        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _maximumWidth, self.view.bounds.size.height)];
         _tabBar.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin;
         _tabBar.delegate = self;
         _tabBar.canCancelContentTouches = YES;
@@ -87,8 +87,21 @@ static CGFloat panningHorizontalPosition = 0;
             _tabBar.tableHeaderView = headerImgView;
         }
         else {
-            UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _tabBarWidth, _tabBarHeaderHeight)];
+            UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _maximumWidth, _tabBarHeaderHeight)];
             _tabBar.tableHeaderView = headerView;
+        }
+        
+        
+        if (_toolBar) {
+            CGRect _tabBarRect = _tabBar.frame;
+            _tabBarRect.size.height -= 44.0;
+            _tabBar.frame = _tabBarRect;
+            
+            CGRect _toolBarRect = _toolBar.frame;
+            _toolBarRect.origin.y = _tabBarRect.size.height;
+            _toolBar.frame = _toolBarRect;
+            
+            [self.view insertSubview:_toolBar aboveSubview:_tabBar];
         }
     }
     return _tabBar;
@@ -130,6 +143,7 @@ static CGFloat panningHorizontalPosition = 0;
             
             if ([vc isKindOfClass:[UINavigationController class]]) {
                 UINavigationController *nc = (UINavigationController *)vc;
+                nc.navigationBar.clipsToBounds = YES;
                 
                 UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
                 tapGesture.delegate = self;
@@ -233,12 +247,6 @@ static CGFloat panningHorizontalPosition = 0;
     }
 }
 
-- (void)setTabBarWidth:(CGFloat)width
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _tabBarWidth = self.view.frame.size.width-44.0;
-    else _tabBarWidth = width;
-}
-
 - (void)setTabBarHeaderHeight:(CGFloat)height
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _tabBarHeaderHeight = 44.0;
@@ -290,12 +298,18 @@ static CGFloat panningHorizontalPosition = 0;
         UIViewController *selectedViewController = [self.viewControllers objectAtIndex:_selectedIndex];
         _tabBar.userInteractionEnabled = NO;
         
+        CGRect toolbarRect = _toolBar.frame;
+        toolbarRect.size.width = _maximumWidth;
+        
         [UIView animateWithDuration:duration
                               delay:0
-                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
-                         animations:^{selectedViewController.view.frame = [self expandedRect];}
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
+                         animations:^{selectedViewController.view.frame = [self expandedRect];
+                             if (_toolBar && _adjustToolBarToCurrentWidth) _toolBar.frame = toolbarRect;
+                         }
                          completion:^(BOOL finished){_expanded = YES;
-                             _tabBar.userInteractionEnabled = YES;}];
+                             _tabBar.userInteractionEnabled = YES;
+                         }];
     }
 }
 
@@ -311,10 +325,15 @@ static CGFloat panningHorizontalPosition = 0;
         UIViewController *selectedViewController = [self.viewControllers objectAtIndex:_selectedIndex];
         _tabBar.userInteractionEnabled = NO;
         
+        CGRect toolbarRect = _toolBar.frame;
+        toolbarRect.size.width = _minimumWidth;
+        
         [UIView animateWithDuration:duration
                               delay:0
-                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
-                         animations:^{selectedViewController.view.frame = [self contractedRect];}
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
+                         animations:^{selectedViewController.view.frame = [self contractedRect];
+                             if (_toolBar && _adjustToolBarToCurrentWidth) _toolBar.frame = toolbarRect;
+                         }
                          completion:^(BOOL finished){_expanded = NO;
                              _tabBar.userInteractionEnabled = YES;
                              _didSelect = NO;
@@ -336,30 +355,50 @@ static CGFloat panningHorizontalPosition = 0;
     }
     
     newPoint = CGPointMake(panningHorizontalPosition + newPoint.x, 0);
+    if (newPoint.x < _minimumWidth) newPoint.x = _minimumWidth;
+    else if (newPoint.x > _maximumWidth) newPoint.x = _maximumWidth;
     
     if (panGesture.state == UIGestureRecognizerStateChanged)
     {
-        if (newPoint.x > _minimumWidth && newPoint.x <= _maximumWidth)
+        if (newPoint.x >= _minimumWidth && newPoint.x <= _maximumWidth)
         {
             CGRect frame = panGesture.view.frame;
             frame.origin = newPoint;
             [panGesture.view setFrame:frame];
+            
+            if (_toolBar) [self adjustToolbarToNewWidth:newPoint.x];
         }
     }
     else if (panGesture.state == UIGestureRecognizerStateEnded)
     {
         CGFloat menuWidth = _maximumWidth - _minimumWidth;
-        CGFloat velocityX = (0.2 * [panGesture velocityInView:self.view].x);
+        CGFloat threshold = 0.2;
+        CGFloat velocityX = (threshold * [panGesture velocityInView:self.view].x);
         
         if (abs(velocityX) < 100) {
             if (newPoint.x > roundf(menuWidth/2)) [self expandMenu];
             else [self contractMenu];
         }
         else {
-            CGFloat duration = (ABS(velocityX) * 0.0002) + 0.2;
+            CGFloat duration = (ABS(velocityX) * (threshold/1000)) + threshold;
             if (velocityX > 0) [self expandMenuWithDuration:duration];
             else [self contractMenuWithDuration:duration];
         }
+    }
+}
+
+- (void)adjustToolbarToNewWidth:(CGFloat)width
+{
+    if (_adjustToolBarToCurrentWidth) {
+        if (width > _maximumWidth) width = _maximumWidth;
+        else if (width < _minimumWidth) width = _minimumWidth;
+        
+        CGRect toolbarRect = _toolBar.frame;
+        toolbarRect.size.width = width;
+        
+        [UIView animateWithDuration:0.01 delay:0
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
+                         animations:^{_toolBar.frame = toolbarRect;} completion:NULL];
     }
 }
 
@@ -422,6 +461,43 @@ static CGFloat panningHorizontalPosition = 0;
 {
     return _tabBarButtonHeight;
 }
+
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && !_expanded) return NO;
+//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && !_expanded) {
+//        
+//        UIPanGestureRecognizer *panGesture = (UIPanGestureRecognizer *)gestureRecognizer;
+//        
+//        if (panGesture.state == UIGestureRecognizerStatePossible) {
+//            CGFloat velocityX = (0.2 * [panGesture velocityInView:self.view].x);
+//            NSLog(@"velocityX : %f",velocityX);
+//
+//        }
+//        
+////        if (velocity.x < 0) return NO;
+////        else return YES;
+//        
+//        return YES;
+//    }
+    
+    return YES;
+}
+
+//- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+//{
+//    NSLog(@"%s",__FUNCTION__);
+//    
+//    return YES;
+//}
+//
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+//{
+//    return NO;
+//}
 
 
 #pragma mark - NSKeyValueObserving (KVO) Methods

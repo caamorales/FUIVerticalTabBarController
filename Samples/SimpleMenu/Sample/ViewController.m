@@ -3,12 +3,12 @@
 //  Sample
 //
 //  Created by Ignacio on 8/4/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //
 
 #import "ViewController.h"
-#import "UIColor+Sample.h"
 #import "FUIVerticalTabBarButton.h"
+#import "UIColor+FlatUI.h"
 
 @interface ViewController ()
 @end
@@ -20,12 +20,12 @@
     self = [super init];
     if (self) {
         
-        self.title = @"Actividades";
-        UIImage *finishedSelectedImage = [UIImage imageNamed:@"tabBarIcon_settings" andColored:[UIColor whiteColor]];
-        UIImage *finishedUnselectedImage = [UIImage imageNamed:@"tabBarIcon_settings" andColored:[UIColor slateLightGray]];
-
+        self.title = [@"Settings" uppercaseString];
+        UIImage *selectedImage = [UIImage imageNamed:@"tabBarIcon_settings_selected" andColored:[UIColor colorFromHexCode:@"1f2733"]];
+        UIImage *unselectedImage = [UIImage imageNamed:@"tabBarIcon_settings_unselected" andColored:[UIColor colorFromHexCode:@"c8d1de"]];
+        
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:self.title image:nil tag:1];
-        [self.tabBarItem setFinishedSelectedImage:finishedSelectedImage withFinishedUnselectedImage:finishedUnselectedImage];
+        [self.tabBarItem setFinishedSelectedImage:selectedImage withFinishedUnselectedImage:unselectedImage];
         
         NSInteger randomCount = random() % (30);
         [self.tabBarItem setBadgeValue:[NSString stringWithFormat:@"%d", randomCount]];

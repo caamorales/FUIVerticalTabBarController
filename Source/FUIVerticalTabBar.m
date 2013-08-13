@@ -3,7 +3,7 @@
 //  FUIVerticalTabBarController
 //
 //  Created by Ignacio Romero Zurbuchen on 8/3/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //  Licence: MIT-Licence
 //
 
@@ -99,22 +99,6 @@
     }
 }
 
-- (void)setScrollMode:(FUIVerticalTabBarScrollMode)mode
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _scrollMode = FUIVerticalTabBarScrollToFit;
-    else _scrollMode = mode;
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesBegan:touches withEvent:event];
-    
-    UITouch *touch = [touches anyObject];
-    if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
-        [self.delegate tableView:self didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:touch.view.tag inSection:0]];
-    }
-}
-
 
 #pragma mark - UITableViewDataSource Methods
 
@@ -144,6 +128,10 @@
     button.selectedBackgroundView.backgroundColor = _selectedTabColor;
     button.backgroundView.backgroundColor = _unselectedTabColor;
     button.textLabel.textColor = _textColor;
+    button.textLabel.highlightedTextColor = _unselectedTabColor;
+    button.textLabel.font = _textFont;
+    button.badgeTextColor = _badgeTextColor;
+    button.badgeTextFont = _badgeTextFont;
     button.backgroundColor = self.backgroundColor;
     button.foregroundColor = _selectedTabColor;
     button.highlighted = NO;
@@ -169,6 +157,19 @@
 {
     FUIVerticalTabBarButton *button = (FUIVerticalTabBarButton *)[self cellForRowAtIndexPath:indexPath];
     [self configureTarBarButton:button atIndexPath:indexPath];
+}
+
+
+#pragma mark - Responding to Touch Events
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    
+    UITouch *touch = [touches anyObject];
+    if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
+        [self.delegate tableView:self didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:touch.view.tag inSection:0]];
+    }
 }
 
 @end

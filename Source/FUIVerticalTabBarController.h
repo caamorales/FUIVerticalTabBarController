@@ -3,11 +3,12 @@
 //  FUIVerticalTabBarController
 //
 //  Created by Ignacio Romero Zurbuchen on 8/3/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //  Licence: MIT-Licence
 //
 
-#import <FlatUIKit/FlatUIKit.h>
+#import "FlatUIKit.h"
+//#import <FlatUIKit/FlatUIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "FUIVerticalTabBar.h"
 
@@ -30,15 +31,13 @@
 @property (nonatomic, readwrite, assign) UIViewController *selectedViewController;
 /** The index of the selected viewcontroller */
 @property (nonatomic, readwrite, assign) NSUInteger selectedIndex;
-/** The TabBar width. */
-@property (nonatomic, readwrite, assign) CGFloat tabBarWidth;
 /**  */
 @property (nonatomic, readwrite, assign) CGFloat tabBarHeaderHeight;
 /**  */
 @property (nonatomic, readwrite, assign) CGFloat tabBarButtonHeight;
-/**  */
+/** The TabBar maximum width. */
 @property (nonatomic, readwrite, assign) CGFloat maximumWidth;
-/**  */
+/** The TabBar minimum width. */
 @property (nonatomic, readwrite, assign) CGFloat minimumWidth;
 /**  */
 @property (nonatomic, getter = isExpanded) BOOL expanded;
@@ -50,6 +49,8 @@
 @property (nonatomic) BOOL startExpanded;
 /**  */
 @property (nonatomic, strong) UIToolbar *toolBar;
+/**  */
+@property (nonatomic) BOOL adjustToolBarToCurrentWidth;
 
 
 /**

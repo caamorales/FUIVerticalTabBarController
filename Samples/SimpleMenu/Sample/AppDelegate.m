@@ -3,13 +3,13 @@
 //  Sample
 //
 //  Created by Ignacio on 8/3/13.
-//  Copyright (c) 2013 DZN. All rights reserved.
+//  Copyright (c) 2013 DZN Labs. All rights reserved.
 //
 
 #import "AppDelegate.h"
 #import "ViewController.h"
 
-#import "UIColor+Sample.h"
+#import "UIColor+FlatUI.h"
 
 @implementation AppDelegate
 
@@ -31,7 +31,6 @@
     if (!_verticalTabBarController)
     {
         _verticalTabBarController = [[FUIVerticalTabBarController alloc] init];
-        _verticalTabBarController.tabBarWidth = 240.0;
         _verticalTabBarController.tabBarHeaderHeight = 80.0;
         _verticalTabBarController.tabBarButtonHeight = 60.0;
         _verticalTabBarController.maximumWidth = 240.0;
@@ -40,22 +39,22 @@
         _verticalTabBarController.startExpanded = NO;
         _verticalTabBarController.delegate = self;
         
-        _verticalTabBarController.tabBar.backgroundColor = [UIColor slateDarkGray];
-        _verticalTabBarController.tabBar.selectedTabColor = [UIColor brandColor];
-        _verticalTabBarController.tabBar.unselectedTabColor = [UIColor slateGray];
-        _verticalTabBarController.tabBar.textColor = [UIColor slateLightGray];
-        _verticalTabBarController.tabBar.scrollMode = FUIVerticalTabBarScrollToFit;
-        
+        _verticalTabBarController.tabBar.scrollMode = FUIVerticalTabBarScrollAlways;
+        _verticalTabBarController.tabBar.backgroundColor = [UIColor colorFromHexCode:@"1f2733"];
+        _verticalTabBarController.tabBar.selectedTabColor = [UIColor colorFromHexCode:@"c8602c"];
+        _verticalTabBarController.tabBar.unselectedTabColor = [UIColor colorFromHexCode:@"28313f"];
+        _verticalTabBarController.tabBar.textColor = [UIColor colorFromHexCode:@"c8d1de"];
+        _verticalTabBarController.tabBar.textFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0];
+        _verticalTabBarController.tabBar.badgeTextColor = [UIColor whiteColor];
+        _verticalTabBarController.tabBar.badgeTextFont = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
+
         NSMutableArray *viewControllers = [NSMutableArray new];
         for (int i = 0; i < 5; i++) {
             ViewController *vc = [[ViewController alloc] init];
             UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
             
-            UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:_verticalTabBarController action:@selector(switchMenu)];
+            UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:_verticalTabBarController action:@selector(switchMenu:)];
             [vc.navigationItem setLeftBarButtonItem:menuItem];
-            
-            UIBarButtonItem *testItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(test:)];
-            [vc.navigationItem setRightBarButtonItem:testItem];
             
             [viewControllers addObject:nc];
         }
@@ -64,11 +63,6 @@
         _verticalTabBarController.selectedIndex = 0;
     }
     return _verticalTabBarController;
-}
-
-- (IBAction)test:(id)sender
-{
-    NSLog(@"%s",__FUNCTION__);
 }
 
 
