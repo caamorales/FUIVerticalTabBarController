@@ -82,6 +82,12 @@
     [self reloadData];
 }
 
+- (void)setHighlightedTextColor:(UIColor *)color
+{
+    _highlightedTextColor = color;
+    [self reloadData];
+}
+
 - (void)setTextFont:(UIFont *)font
 {
     _textFont = font;
@@ -125,17 +131,21 @@
 - (FUIVerticalTabBarButton *)verticalTabBarButtonForIndexPath:(NSIndexPath *)indexPath
 {
     FUIVerticalTabBarButton *button = [[FUIVerticalTabBarButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FUIVerticalTabBarIdentifier];
+    
+    button.height = [self.delegate tableView:self heightForRowAtIndexPath:indexPath];
+    button.foregroundColor = _selectedTabColor;
+    button.backgroundColor = self.backgroundColor;
     button.selectedBackgroundView.backgroundColor = _selectedTabColor;
     button.backgroundView.backgroundColor = _unselectedTabColor;
     button.textLabel.textColor = _textColor;
-    button.textLabel.highlightedTextColor = _unselectedTabColor;
+    button.textLabel.highlightedTextColor = _highlightedTextColor;
     button.textLabel.font = _textFont;
+    
     button.badgeTextColor = _badgeTextColor;
     button.badgeTextFont = _badgeTextFont;
-    button.backgroundColor = self.backgroundColor;
-    button.foregroundColor = _selectedTabColor;
-    button.highlighted = NO;
-    button.height = [self.delegate tableView:self heightForRowAtIndexPath:indexPath];
+    button.badgeColor = _selectedTabColor;
+    button.badgeHighlightedColor = _unselectedTabColor;
+    
     return button;
 }
 

@@ -66,9 +66,9 @@
     FUIVerticalTabBarBadgeLabel *badgeLabel = [[FUIVerticalTabBarBadgeLabel alloc] initWithFrame:CGRectZero];
     badgeLabel.font = _badgeTextFont;
     badgeLabel.textColor = _badgeTextColor;
-    badgeLabel.highlightedTextColor = [UIColor whiteColor];
+    badgeLabel.highlightedTextColor = _badgeHighlightedColor;
     badgeLabel.textAlignment = NSTextAlignmentCenter;
-    [badgeLabel setPersistentBackgroundColor:self.backgroundColor];
+    [badgeLabel setPersistentBackgroundColor:_badgeColor];
     badgeLabel.text = _badgeValue;
     
     badgeLabel.layer.cornerRadius = 4.0;

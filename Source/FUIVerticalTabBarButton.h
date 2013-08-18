@@ -8,7 +8,6 @@
 //
 
 #import "FlatUIKit.h"
-//#import <FlatUIKit/FlatUIKit.h>
 
 /**
  * @brief A custom tableview cell used for simulating an UITabBarItem behaviour.
@@ -23,6 +22,10 @@
 @property (nonatomic, weak) UIColor *badgeTextColor;
 /**  */
 @property (nonatomic, weak) UIFont *badgeTextFont;
+/**  */
+@property (nonatomic, weak) UIColor *badgeColor;
+/**  */
+@property (nonatomic, weak) UIColor *badgeHighlightedColor;
 /**  */
 @property (nonatomic, getter = isUnread) BOOL unread;
 /**  */

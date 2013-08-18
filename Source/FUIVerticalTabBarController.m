@@ -10,7 +10,10 @@
 #import "FUIVerticalTabBarController.h"
 #import "FUIVerticalTabBarButton.h"
 
-static CGFloat panningHorizontalPosition = 0;
+#define IOS_OLDER_THAN_7 ( [ [ [ UIDevice currentDevice ] systemVersion ] floatValue ] < 7.0 )
+#define IOS_NEWER_OR_EQUAL_TO_7 ( [ [ [ UIDevice currentDevice ] systemVersion ] floatValue ] >= 7.0 )
+
+static CGPoint panningHorizontalPosition;
 
 @interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate>
 {
@@ -148,7 +151,7 @@ static CGFloat panningHorizontalPosition = 0;
                 UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
                 tapGesture.delegate = self;
                 [nc.view addGestureRecognizer:tapGesture];
-                
+
                 UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanning:)];
                 panGesture.maximumNumberOfTouches = 1;
                 panGesture.minimumNumberOfTouches = 1;
@@ -251,6 +254,10 @@ static CGFloat panningHorizontalPosition = 0;
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _tabBarHeaderHeight = 44.0;
     else _tabBarHeaderHeight = height;
+    
+    if (IOS_NEWER_OR_EQUAL_TO_7) {
+        _tabBarHeaderHeight+=[UIApplication sharedApplication].statusBarFrame.size.height;
+    }
 }
 
 - (void)setMinimumWidth:(CGFloat)width
@@ -351,10 +358,10 @@ static CGFloat panningHorizontalPosition = 0;
     CGPoint newPoint = [panGesture translationInView:self.view];
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
-        panningHorizontalPosition = panGesture.view.frame.origin.x;
+        panningHorizontalPosition = panGesture.view.frame.origin;
     }
     
-    newPoint = CGPointMake(panningHorizontalPosition + newPoint.x, 0);
+    newPoint = CGPointMake(panningHorizontalPosition.x + newPoint.x, 0);
     if (newPoint.x < _minimumWidth) newPoint.x = _minimumWidth;
     else if (newPoint.x > _maximumWidth) newPoint.x = _maximumWidth;
     
@@ -404,7 +411,7 @@ static CGFloat panningHorizontalPosition = 0;
 
 - (void)handleTap:(UITapGestureRecognizer *)tapGesture
 {
-    if (![self.delegate verticalTabBarControllerContractAfterTap:self]) {
+    if (![self.delegate verticalTabBarControllerContractAfterTap:self] && _expanded == NO) {
         return;
     }
     
@@ -468,36 +475,30 @@ static CGFloat panningHorizontalPosition = 0;
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && !_expanded) return NO;
-//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && !_expanded) {
-//        
-//        UIPanGestureRecognizer *panGesture = (UIPanGestureRecognizer *)gestureRecognizer;
-//        
-//        if (panGesture.state == UIGestureRecognizerStatePossible) {
-//            CGFloat velocityX = (0.2 * [panGesture velocityInView:self.view].x);
-//            NSLog(@"velocityX : %f",velocityX);
-//
-//        }
-//        
-////        if (velocity.x < 0) return NO;
-////        else return YES;
-//        
-//        return YES;
-//    }
-    
+
     return YES;
 }
 
-//- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-//{
-//    NSLog(@"%s",__FUNCTION__);
-//    
-//    return YES;
-//}
-//
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-//{
-//    return NO;
-//}
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
+    {
+        UIPanGestureRecognizer *panGestureRecognizer = (UIPanGestureRecognizer *)gestureRecognizer;
+        CGPoint translation = [panGestureRecognizer translationInView:self.view];
+        
+        if (translation.x < 0 && !self.isExpanded) {
+            return NO;
+        }
+
+        return (fabs(translation.y) == 0);
+    }
+    else return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return NO;
+}
 
 
 #pragma mark - NSKeyValueObserving (KVO) Methods

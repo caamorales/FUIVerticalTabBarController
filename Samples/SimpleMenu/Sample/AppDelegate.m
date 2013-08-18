@@ -51,6 +51,7 @@
         NSMutableArray *viewControllers = [NSMutableArray new];
         for (int i = 0; i < 5; i++) {
             ViewController *vc = [[ViewController alloc] init];
+            
             UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
             
             UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:_verticalTabBarController action:@selector(switchMenu:)];

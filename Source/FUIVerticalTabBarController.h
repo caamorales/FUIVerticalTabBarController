@@ -8,7 +8,6 @@
 //
 
 #import "FlatUIKit.h"
-//#import <FlatUIKit/FlatUIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "FUIVerticalTabBar.h"
 

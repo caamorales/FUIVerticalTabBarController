@@ -27,10 +27,10 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:self.title image:nil tag:1];
         [self.tabBarItem setFinishedSelectedImage:selectedImage withFinishedUnselectedImage:unselectedImage];
         
-        NSInteger randomCount = random() % (30);
+        NSInteger randomCount = random()%30;
         [self.tabBarItem setBadgeValue:[NSString stringWithFormat:@"%d", randomCount]];
         
-        self.view.backgroundColor = [UIColor randomColor];
+        self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
@@ -41,6 +41,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self setWantsFullScreenLayout:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated
