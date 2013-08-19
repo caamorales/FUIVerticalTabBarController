@@ -529,7 +529,12 @@ static CGPoint panningHorizontalPosition;
 
 #pragma mark - View Auto-Rotation
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskAll;
+}
+
+- (BOOL)shouldAutorotate
 {
     return YES;
 }
