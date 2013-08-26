@@ -15,8 +15,7 @@
 
 static CGPoint panningHorizontalPosition;
 
-@interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate>
-{
+@interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate> {
     BOOL _didSelect;
 }
 @end
@@ -133,6 +132,8 @@ static CGPoint panningHorizontalPosition;
 
 - (void)setViewControllers:(NSArray *)viewControllers
 {
+    NSLog(@"%s",__FUNCTION__);
+    
     _viewControllers = viewControllers;
     
     //// Creates the tab bar items
@@ -143,6 +144,7 @@ static CGPoint panningHorizontalPosition;
         for (UIViewController *vc in _viewControllers) {
             [tabBarItems addObject:vc.tabBarItem];
             [vc.tabBarItem addObserver:self forKeyPath:@"badgeValue" options:NSKeyValueObservingOptionNew context:nil];
+            vc.view.clipsToBounds = YES;
             
             if ([vc isKindOfClass:[UINavigationController class]]) {
                 UINavigationController *nc = (UINavigationController *)vc;
@@ -430,6 +432,21 @@ static CGPoint panningHorizontalPosition;
     self.tabBar.selectedItem = [self.tabBar.items objectAtIndex:_selectedIndex];
 }
 
+- (void)reset
+{
+    for (UIViewController *controller in self.childViewControllers) {
+        [controller removeFromParentViewController];
+        [controller.view removeFromSuperview];
+    }
+    
+    [self setViewControllers:nil];
+    [self.tabBar setItems:nil];
+    
+    if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidReset:)]) {
+        [_delegate verticalTabBarControllerDidReset:self];
+    }
+}
+
 
 #pragma mark - UITableViewDelegate methods
 
@@ -524,19 +541,6 @@ static CGPoint panningHorizontalPosition;
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-}
-
-
-#pragma mark - View Auto-Rotation
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskAll;
-}
-
-- (BOOL)shouldAutorotate
-{
-    return YES;
 }
 
 @end

@@ -68,6 +68,9 @@
 /**  */
 - (void)switchMenu:(id)sender;
 
+/**  */
+- (void)reset;
+
 @end
 
 @protocol FUIVerticalTabBarControllerDelegate <NSObject>
@@ -98,5 +101,8 @@
 
 /**  */
 - (BOOL)verticalTabBarControllerContractWhenSelecting:(FUIVerticalTabBarController *)tabBarController;
+
+/**  */
+- (void)verticalTabBarControllerDidReset:(FUIVerticalTabBarController *)tabBarController;
 
 @end
