@@ -13,23 +13,23 @@
 #define kVerticalTabBarButtonHeight 30.0
 #define kVerticalTabBarButtonMargin 8.0
 
-@interface FUIVerticalTabBarBadgeLabel : UILabel
-
-- (void)setPersistentBackgroundColor:(UIColor *)color;
-
-@end
-
-@implementation FUIVerticalTabBarBadgeLabel
-
-- (void)setPersistentBackgroundColor:(UIColor*)color {
-    super.backgroundColor = color;
-}
-
-- (void)setBackgroundColor:(UIColor *)color {
-    // do nothing - background color never changes
-}
-
-@end
+//@interface FUIVerticalTabBarBadgeLabel : UILabel
+//
+//- (void)setPersistentBackgroundColor:(UIColor *)color;
+//
+//@end
+//
+//@implementation FUIVerticalTabBarBadgeLabel
+//
+//- (void)setPersistentBackgroundColor:(UIColor*)color {
+//    super.backgroundColor = color;
+//}
+//
+//- (void)setBackgroundColor:(UIColor *)color {
+//    // do nothing - background color never changes
+//}
+//
+//@end
 
 
 @interface FUIVerticalTabBarButton () 
@@ -61,26 +61,25 @@
 
 #pragma mark - Getter Methods
 
-- (FUIVerticalTabBarBadgeLabel *)badgeView
+- (UIButton *)badgeView
 {
-    FUIVerticalTabBarBadgeLabel *badgeLabel = [[FUIVerticalTabBarBadgeLabel alloc] initWithFrame:CGRectZero];
-    badgeLabel.font = _badgeTextFont;
-    badgeLabel.textColor = _badgeTextColor;
-    badgeLabel.highlightedTextColor = _badgeHighlightedColor;
-    badgeLabel.textAlignment = NSTextAlignmentCenter;
-    [badgeLabel setPersistentBackgroundColor:_badgeColor];
-    badgeLabel.text = _badgeValue;
+    UIButton *badgeView = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    badgeLabel.layer.cornerRadius = 4.0;
-    badgeLabel.layer.masksToBounds = YES;
-    badgeLabel.layer.shouldRasterize = YES;
-    badgeLabel.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    badgeView.titleLabel.font = _badgeTextFont;
+    badgeView.titleLabel.textAlignment = NSTextAlignmentCenter;
     
-    CGSize size = [_badgeValue sizeWithFont:badgeLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
+    [badgeView setTitle:_badgeValue forState:UIControlStateNormal];
+    [badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
+    [badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
+
+    [badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:4.0] forState:UIControlStateNormal];
+    [badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
+
+    CGSize size = [_badgeValue sizeWithFont:badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
     size.width += kVerticalTabBarButtonMargin*2;
-    badgeLabel.frame = CGRectMake(0, 0, size.width, kVerticalTabBarButtonHeight);
+    badgeView.frame = CGRectMake(0, 0, size.width, kVerticalTabBarButtonHeight);
     
-    return badgeLabel;
+    return badgeView;
 }
 
 - (UIView *)readingIndicatorView

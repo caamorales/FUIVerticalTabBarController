@@ -25,8 +25,6 @@
 /**  */
 @property (nonatomic, weak) UIColor *badgeColor;
 /**  */
-@property (nonatomic, weak) UIColor *badgeHighlightedColor;
-/**  */
 @property (nonatomic, getter = isUnread) BOOL unread;
 /**  */
 @property (nonatomic, assign) CGFloat height;
