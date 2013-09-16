@@ -7,8 +7,7 @@
 //
 
 #import "FlatUIKit.h"
-#import "DZCategories.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UITableViewController
 
 @end

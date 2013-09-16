@@ -19,7 +19,7 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @interface FUIVerticalTabBar : UITableView <UITableViewDataSource>
 
 /** The TabBar items of each viewcontroller. */
-@property (nonatomic, readwrite, copy) NSArray *items;
+@property (nonatomic, strong) NSArray *items;
 /** The selected TabBar item. */
 @property (nonatomic, weak) UITabBarItem *selectedItem;
 /** The selection indicator image */

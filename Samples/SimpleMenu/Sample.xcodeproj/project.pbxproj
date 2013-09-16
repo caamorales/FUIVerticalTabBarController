@@ -7,34 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F85C99417B8575300604D82 /* CGGeometry+Point.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C95B17B8575300604D82 /* CGGeometry+Point.m */; };
-		4F85C99517B8575300604D82 /* CGGeometry+Rect.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C95D17B8575300604D82 /* CGGeometry+Rect.m */; };
-		4F85C99617B8575300604D82 /* CGGeometry+Size.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C95F17B8575300604D82 /* CGGeometry+Size.m */; };
-		4F85C99717B8575300604D82 /* CGGeometry+UIEdgeInsets.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C96117B8575300604D82 /* CGGeometry+UIEdgeInsets.m */; };
-		4F85C99817B8575300604D82 /* CLLocation+Coordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C96417B8575300604D82 /* CLLocation+Coordinate.m */; };
-		4F85C9A617B8575300604D82 /* UIColor+Effect.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C98317B8575300604D82 /* UIColor+Effect.m */; };
-		4F85C9A717B8575300604D82 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C98517B8575300604D82 /* UIColor+Hex.m */; };
-		4F85C9A817B8575300604D82 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C98717B8575300604D82 /* UIImage+Alpha.m */; };
-		4F85C9A917B8575300604D82 /* UIImage+Effect.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C98917B8575300604D82 /* UIImage+Effect.m */; };
-		4F85C9AA17B8575300604D82 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C98B17B8575300604D82 /* UIImage+Resize.m */; };
-		4F85C9AB17B8575300604D82 /* UIImage+Splash.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C98D17B8575300604D82 /* UIImage+Splash.m */; };
-		4F85C9AC17B8575300604D82 /* UIScrollView+Scroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C98F17B8575300604D82 /* UIScrollView+Scroll.m */; };
-		4F85C9AD17B8575300604D82 /* UIView+Effect.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C99117B8575300604D82 /* UIView+Effect.m */; };
-		4F85C9AE17B8575300604D82 /* UIView+Frame.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F85C99317B8575300604D82 /* UIView+Frame.m */; };
-		4F90074917BA9971009D2480 /* NSArray+Query.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90072E17BA9970009D2480 /* NSArray+Query.m */; };
-		4F90074A17BA9971009D2480 /* NSArray+Safe.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073017BA9970009D2480 /* NSArray+Safe.m */; };
-		4F90074B17BA9971009D2480 /* NSDate+Comparison.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073217BA9970009D2480 /* NSDate+Comparison.m */; };
-		4F90074C17BA9971009D2480 /* NSDate+Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073417BA9970009D2480 /* NSDate+Converter.m */; };
-		4F90074D17BA9971009D2480 /* NSDictionary+Safe.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073617BA9970009D2480 /* NSDictionary+Safe.m */; };
-		4F90074E17BA9971009D2480 /* NSMutableArray+Save.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073817BA9970009D2480 /* NSMutableArray+Save.m */; };
-		4F90074F17BA9971009D2480 /* NSMutableDictionary+Safe.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073A17BA9970009D2480 /* NSMutableDictionary+Safe.m */; };
-		4F90075017BA9971009D2480 /* NSObject+System.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073C17BA9970009D2480 /* NSObject+System.m */; };
-		4F90075117BA9971009D2480 /* NSString+Case.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90073E17BA9970009D2480 /* NSString+Case.m */; };
-		4F90075217BA9971009D2480 /* NSString+Path.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90074017BA9971009D2480 /* NSString+Path.m */; };
-		4F90075317BA9971009D2480 /* NSString+Regex.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90074217BA9971009D2480 /* NSString+Regex.m */; };
-		4F90075417BA9971009D2480 /* NSString+Security.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90074417BA9971009D2480 /* NSString+Security.m */; };
-		4F90075517BA9971009D2480 /* NSURL+Query.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90074617BA9971009D2480 /* NSURL+Query.m */; };
-		4F90075617BA9971009D2480 /* NSUserDefaults+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90074817BA9971009D2480 /* NSUserDefaults+Custom.m */; };
 		4F90077D17BA9B3E009D2480 /* FUIAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90075A17BA9B3E009D2480 /* FUIAlertView.m */; };
 		4F90077E17BA9B3E009D2480 /* FUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90075C17BA9B3E009D2480 /* FUIButton.m */; };
 		4F90077F17BA9B3E009D2480 /* FUICellBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F90075E17BA9B3E009D2480 /* FUICellBackgroundView.m */; };
@@ -63,10 +35,6 @@
 		4F9007A117BA9C14009D2480 /* Lato-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F90079717BA9C14009D2480 /* Lato-Light.ttf */; };
 		4F9007A217BA9C14009D2480 /* Lato-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F90079817BA9C14009D2480 /* Lato-LightItalic.ttf */; };
 		4F9007A317BA9C14009D2480 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F90079917BA9C14009D2480 /* Lato-Regular.ttf */; };
-		4F9007A817BAA292009D2480 /* tabBarIcon_settings_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9007A417BAA292009D2480 /* tabBarIcon_settings_selected.png */; };
-		4F9007A917BAA292009D2480 /* tabBarIcon_settings_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9007A517BAA292009D2480 /* tabBarIcon_settings_selected@2x.png */; };
-		4F9007AA17BAA292009D2480 /* tabBarIcon_settings_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9007A617BAA292009D2480 /* tabBarIcon_settings_unselected.png */; };
-		4F9007AB17BAA292009D2480 /* tabBarIcon_settings_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9007A717BAA292009D2480 /* tabBarIcon_settings_unselected@2x.png */; };
 		4F9404DC17AD8D700035D461 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F9404DB17AD8D700035D461 /* UIKit.framework */; };
 		4F9404DE17AD8D700035D461 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F9404DD17AD8D700035D461 /* Foundation.framework */; };
 		4F9404E017AD8D700035D461 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F9404DF17AD8D700035D461 /* CoreGraphics.framework */; };
@@ -86,63 +54,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4F85C95A17B8575300604D82 /* CGGeometry+Point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+Point.h"; sourceTree = "<group>"; };
-		4F85C95B17B8575300604D82 /* CGGeometry+Point.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CGGeometry+Point.m"; sourceTree = "<group>"; };
-		4F85C95C17B8575300604D82 /* CGGeometry+Rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+Rect.h"; sourceTree = "<group>"; };
-		4F85C95D17B8575300604D82 /* CGGeometry+Rect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CGGeometry+Rect.m"; sourceTree = "<group>"; };
-		4F85C95E17B8575300604D82 /* CGGeometry+Size.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+Size.h"; sourceTree = "<group>"; };
-		4F85C95F17B8575300604D82 /* CGGeometry+Size.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CGGeometry+Size.m"; sourceTree = "<group>"; };
-		4F85C96017B8575300604D82 /* CGGeometry+UIEdgeInsets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+UIEdgeInsets.h"; sourceTree = "<group>"; };
-		4F85C96117B8575300604D82 /* CGGeometry+UIEdgeInsets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CGGeometry+UIEdgeInsets.m"; sourceTree = "<group>"; };
-		4F85C96317B8575300604D82 /* CLLocation+Coordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CLLocation+Coordinate.h"; sourceTree = "<group>"; };
-		4F85C96417B8575300604D82 /* CLLocation+Coordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CLLocation+Coordinate.m"; sourceTree = "<group>"; };
-		4F85C96517B8575300604D82 /* DZCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DZCategories.h; path = ../../../../DZCategories/DZCategories.h; sourceTree = "<group>"; };
-		4F85C98217B8575300604D82 /* UIColor+Effect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Effect.h"; sourceTree = "<group>"; };
-		4F85C98317B8575300604D82 /* UIColor+Effect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Effect.m"; sourceTree = "<group>"; };
-		4F85C98417B8575300604D82 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
-		4F85C98517B8575300604D82 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
-		4F85C98617B8575300604D82 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
-		4F85C98717B8575300604D82 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
-		4F85C98817B8575300604D82 /* UIImage+Effect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Effect.h"; sourceTree = "<group>"; };
-		4F85C98917B8575300604D82 /* UIImage+Effect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Effect.m"; sourceTree = "<group>"; };
-		4F85C98A17B8575300604D82 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
-		4F85C98B17B8575300604D82 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
-		4F85C98C17B8575300604D82 /* UIImage+Splash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Splash.h"; sourceTree = "<group>"; };
-		4F85C98D17B8575300604D82 /* UIImage+Splash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Splash.m"; sourceTree = "<group>"; };
-		4F85C98E17B8575300604D82 /* UIScrollView+Scroll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Scroll.h"; sourceTree = "<group>"; };
-		4F85C98F17B8575300604D82 /* UIScrollView+Scroll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Scroll.m"; sourceTree = "<group>"; };
-		4F85C99017B8575300604D82 /* UIView+Effect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Effect.h"; sourceTree = "<group>"; };
-		4F85C99117B8575300604D82 /* UIView+Effect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Effect.m"; sourceTree = "<group>"; };
-		4F85C99217B8575300604D82 /* UIView+Frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Frame.h"; sourceTree = "<group>"; };
-		4F85C99317B8575300604D82 /* UIView+Frame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Frame.m"; sourceTree = "<group>"; };
-		4F90072D17BA9970009D2480 /* NSArray+Query.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Query.h"; sourceTree = "<group>"; };
-		4F90072E17BA9970009D2480 /* NSArray+Query.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Query.m"; sourceTree = "<group>"; };
-		4F90072F17BA9970009D2480 /* NSArray+Safe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Safe.h"; sourceTree = "<group>"; };
-		4F90073017BA9970009D2480 /* NSArray+Safe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Safe.m"; sourceTree = "<group>"; };
-		4F90073117BA9970009D2480 /* NSDate+Comparison.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Comparison.h"; sourceTree = "<group>"; };
-		4F90073217BA9970009D2480 /* NSDate+Comparison.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Comparison.m"; sourceTree = "<group>"; };
-		4F90073317BA9970009D2480 /* NSDate+Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Converter.h"; sourceTree = "<group>"; };
-		4F90073417BA9970009D2480 /* NSDate+Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Converter.m"; sourceTree = "<group>"; };
-		4F90073517BA9970009D2480 /* NSDictionary+Safe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Safe.h"; sourceTree = "<group>"; };
-		4F90073617BA9970009D2480 /* NSDictionary+Safe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Safe.m"; sourceTree = "<group>"; };
-		4F90073717BA9970009D2480 /* NSMutableArray+Save.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Save.h"; sourceTree = "<group>"; };
-		4F90073817BA9970009D2480 /* NSMutableArray+Save.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Save.m"; sourceTree = "<group>"; };
-		4F90073917BA9970009D2480 /* NSMutableDictionary+Safe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+Safe.h"; sourceTree = "<group>"; };
-		4F90073A17BA9970009D2480 /* NSMutableDictionary+Safe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+Safe.m"; sourceTree = "<group>"; };
-		4F90073B17BA9970009D2480 /* NSObject+System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+System.h"; sourceTree = "<group>"; };
-		4F90073C17BA9970009D2480 /* NSObject+System.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+System.m"; sourceTree = "<group>"; };
-		4F90073D17BA9970009D2480 /* NSString+Case.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Case.h"; sourceTree = "<group>"; };
-		4F90073E17BA9970009D2480 /* NSString+Case.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Case.m"; sourceTree = "<group>"; };
-		4F90073F17BA9971009D2480 /* NSString+Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Path.h"; sourceTree = "<group>"; };
-		4F90074017BA9971009D2480 /* NSString+Path.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Path.m"; sourceTree = "<group>"; };
-		4F90074117BA9971009D2480 /* NSString+Regex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Regex.h"; sourceTree = "<group>"; };
-		4F90074217BA9971009D2480 /* NSString+Regex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Regex.m"; sourceTree = "<group>"; };
-		4F90074317BA9971009D2480 /* NSString+Security.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Security.h"; sourceTree = "<group>"; };
-		4F90074417BA9971009D2480 /* NSString+Security.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Security.m"; sourceTree = "<group>"; };
-		4F90074517BA9971009D2480 /* NSURL+Query.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Query.h"; sourceTree = "<group>"; };
-		4F90074617BA9971009D2480 /* NSURL+Query.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Query.m"; sourceTree = "<group>"; };
-		4F90074717BA9971009D2480 /* NSUserDefaults+Custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Custom.h"; sourceTree = "<group>"; };
-		4F90074817BA9971009D2480 /* NSUserDefaults+Custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Custom.m"; sourceTree = "<group>"; };
 		4F90075817BA9B3E009D2480 /* FlatUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlatUIKit.h; path = ../../../Source/FlatUIKit/Classes/ios/FlatUIKit.h; sourceTree = "<group>"; };
 		4F90075917BA9B3E009D2480 /* FUIAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FUIAlertView.h; path = ../../../Source/FlatUIKit/Classes/ios/FUIAlertView.h; sourceTree = "<group>"; };
 		4F90075A17BA9B3E009D2480 /* FUIAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FUIAlertView.m; path = ../../../Source/FlatUIKit/Classes/ios/FUIAlertView.m; sourceTree = "<group>"; };
@@ -190,10 +101,6 @@
 		4F90079717BA9C14009D2480 /* Lato-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Light.ttf"; path = "../../../Source/FlatUIKit/Resources/Lato-Light.ttf"; sourceTree = "<group>"; };
 		4F90079817BA9C14009D2480 /* Lato-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-LightItalic.ttf"; path = "../../../Source/FlatUIKit/Resources/Lato-LightItalic.ttf"; sourceTree = "<group>"; };
 		4F90079917BA9C14009D2480 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Regular.ttf"; path = "../../../Source/FlatUIKit/Resources/Lato-Regular.ttf"; sourceTree = "<group>"; };
-		4F9007A417BAA292009D2480 /* tabBarIcon_settings_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tabBarIcon_settings_selected.png; sourceTree = "<group>"; };
-		4F9007A517BAA292009D2480 /* tabBarIcon_settings_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabBarIcon_settings_selected@2x.png"; sourceTree = "<group>"; };
-		4F9007A617BAA292009D2480 /* tabBarIcon_settings_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tabBarIcon_settings_unselected.png; sourceTree = "<group>"; };
-		4F9007A717BAA292009D2480 /* tabBarIcon_settings_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabBarIcon_settings_unselected@2x.png"; sourceTree = "<group>"; };
 		4F9404D817AD8D700035D461 /* Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F9404DB17AD8D700035D461 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4F9404DD17AD8D700035D461 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -237,106 +144,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4F85C95817B8573800604D82 /* DZCategories */ = {
-			isa = PBXGroup;
-			children = (
-				4F85C96517B8575300604D82 /* DZCategories.h */,
-				4F85C95917B8575300604D82 /* CoreGraphics */,
-				4F85C96217B8575300604D82 /* CoreLocation */,
-				4F85C96617B8575300604D82 /* Foundation */,
-				4F85C98117B8575300604D82 /* UIKit */,
-			);
-			name = DZCategories;
-			sourceTree = "<group>";
-		};
-		4F85C95917B8575300604D82 /* CoreGraphics */ = {
-			isa = PBXGroup;
-			children = (
-				4F85C95A17B8575300604D82 /* CGGeometry+Point.h */,
-				4F85C95B17B8575300604D82 /* CGGeometry+Point.m */,
-				4F85C95C17B8575300604D82 /* CGGeometry+Rect.h */,
-				4F85C95D17B8575300604D82 /* CGGeometry+Rect.m */,
-				4F85C95E17B8575300604D82 /* CGGeometry+Size.h */,
-				4F85C95F17B8575300604D82 /* CGGeometry+Size.m */,
-				4F85C96017B8575300604D82 /* CGGeometry+UIEdgeInsets.h */,
-				4F85C96117B8575300604D82 /* CGGeometry+UIEdgeInsets.m */,
-			);
-			name = CoreGraphics;
-			path = ../../../../DZCategories/CoreGraphics;
-			sourceTree = "<group>";
-		};
-		4F85C96217B8575300604D82 /* CoreLocation */ = {
-			isa = PBXGroup;
-			children = (
-				4F85C96317B8575300604D82 /* CLLocation+Coordinate.h */,
-				4F85C96417B8575300604D82 /* CLLocation+Coordinate.m */,
-			);
-			name = CoreLocation;
-			path = ../../../../DZCategories/CoreLocation;
-			sourceTree = "<group>";
-		};
-		4F85C96617B8575300604D82 /* Foundation */ = {
-			isa = PBXGroup;
-			children = (
-				4F90072D17BA9970009D2480 /* NSArray+Query.h */,
-				4F90072E17BA9970009D2480 /* NSArray+Query.m */,
-				4F90072F17BA9970009D2480 /* NSArray+Safe.h */,
-				4F90073017BA9970009D2480 /* NSArray+Safe.m */,
-				4F90073117BA9970009D2480 /* NSDate+Comparison.h */,
-				4F90073217BA9970009D2480 /* NSDate+Comparison.m */,
-				4F90073317BA9970009D2480 /* NSDate+Converter.h */,
-				4F90073417BA9970009D2480 /* NSDate+Converter.m */,
-				4F90073517BA9970009D2480 /* NSDictionary+Safe.h */,
-				4F90073617BA9970009D2480 /* NSDictionary+Safe.m */,
-				4F90073717BA9970009D2480 /* NSMutableArray+Save.h */,
-				4F90073817BA9970009D2480 /* NSMutableArray+Save.m */,
-				4F90073917BA9970009D2480 /* NSMutableDictionary+Safe.h */,
-				4F90073A17BA9970009D2480 /* NSMutableDictionary+Safe.m */,
-				4F90073B17BA9970009D2480 /* NSObject+System.h */,
-				4F90073C17BA9970009D2480 /* NSObject+System.m */,
-				4F90073D17BA9970009D2480 /* NSString+Case.h */,
-				4F90073E17BA9970009D2480 /* NSString+Case.m */,
-				4F90073F17BA9971009D2480 /* NSString+Path.h */,
-				4F90074017BA9971009D2480 /* NSString+Path.m */,
-				4F90074117BA9971009D2480 /* NSString+Regex.h */,
-				4F90074217BA9971009D2480 /* NSString+Regex.m */,
-				4F90074317BA9971009D2480 /* NSString+Security.h */,
-				4F90074417BA9971009D2480 /* NSString+Security.m */,
-				4F90074517BA9971009D2480 /* NSURL+Query.h */,
-				4F90074617BA9971009D2480 /* NSURL+Query.m */,
-				4F90074717BA9971009D2480 /* NSUserDefaults+Custom.h */,
-				4F90074817BA9971009D2480 /* NSUserDefaults+Custom.m */,
-			);
-			name = Foundation;
-			path = ../../../../DZCategories/Foundation;
-			sourceTree = "<group>";
-		};
-		4F85C98117B8575300604D82 /* UIKit */ = {
-			isa = PBXGroup;
-			children = (
-				4F85C98217B8575300604D82 /* UIColor+Effect.h */,
-				4F85C98317B8575300604D82 /* UIColor+Effect.m */,
-				4F85C98417B8575300604D82 /* UIColor+Hex.h */,
-				4F85C98517B8575300604D82 /* UIColor+Hex.m */,
-				4F85C98617B8575300604D82 /* UIImage+Alpha.h */,
-				4F85C98717B8575300604D82 /* UIImage+Alpha.m */,
-				4F85C98817B8575300604D82 /* UIImage+Effect.h */,
-				4F85C98917B8575300604D82 /* UIImage+Effect.m */,
-				4F85C98A17B8575300604D82 /* UIImage+Resize.h */,
-				4F85C98B17B8575300604D82 /* UIImage+Resize.m */,
-				4F85C98C17B8575300604D82 /* UIImage+Splash.h */,
-				4F85C98D17B8575300604D82 /* UIImage+Splash.m */,
-				4F85C98E17B8575300604D82 /* UIScrollView+Scroll.h */,
-				4F85C98F17B8575300604D82 /* UIScrollView+Scroll.m */,
-				4F85C99017B8575300604D82 /* UIView+Effect.h */,
-				4F85C99117B8575300604D82 /* UIView+Effect.m */,
-				4F85C99217B8575300604D82 /* UIView+Frame.h */,
-				4F85C99317B8575300604D82 /* UIView+Frame.m */,
-			);
-			name = UIKit;
-			path = ../../../../DZCategories/UIKit;
-			sourceTree = "<group>";
-		};
 		4F90075717BA9B34009D2480 /* FlatUIKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -437,8 +244,6 @@
 				4F9404EB17AD8D700035D461 /* AppDelegate.m */,
 				4F94063517AF0F410035D461 /* ViewController.h */,
 				4F94063617AF0F410035D461 /* ViewController.m */,
-				4F85C95817B8573800604D82 /* DZCategories */,
-				4F94063817AF0FDC0035D461 /* Resources */,
 				4F9404E217AD8D700035D461 /* Supporting Files */,
 			);
 			path = Sample;
@@ -456,18 +261,6 @@
 				4F9404F117AD8D700035D461 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		4F94063817AF0FDC0035D461 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				4F9007A417BAA292009D2480 /* tabBarIcon_settings_selected.png */,
-				4F9007A517BAA292009D2480 /* tabBarIcon_settings_selected@2x.png */,
-				4F9007A617BAA292009D2480 /* tabBarIcon_settings_unselected.png */,
-				4F9007A717BAA292009D2480 /* tabBarIcon_settings_unselected@2x.png */,
-			);
-			name = Resources;
-			path = resources;
 			sourceTree = "<group>";
 		};
 		4F9FD6DF17B858B200166870 /* FUIVerticalTabBarController */ = {
@@ -555,10 +348,6 @@
 				4F9007A117BA9C14009D2480 /* Lato-Light.ttf in Resources */,
 				4F9007A217BA9C14009D2480 /* Lato-LightItalic.ttf in Resources */,
 				4F9007A317BA9C14009D2480 /* Lato-Regular.ttf in Resources */,
-				4F9007A817BAA292009D2480 /* tabBarIcon_settings_selected.png in Resources */,
-				4F9007A917BAA292009D2480 /* tabBarIcon_settings_selected@2x.png in Resources */,
-				4F9007AA17BAA292009D2480 /* tabBarIcon_settings_unselected.png in Resources */,
-				4F9007AB17BAA292009D2480 /* tabBarIcon_settings_unselected@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,37 +361,9 @@
 				4F9404E817AD8D700035D461 /* main.m in Sources */,
 				4F9404EC17AD8D700035D461 /* AppDelegate.m in Sources */,
 				4F94063717AF0F410035D461 /* ViewController.m in Sources */,
-				4F85C99417B8575300604D82 /* CGGeometry+Point.m in Sources */,
-				4F85C99517B8575300604D82 /* CGGeometry+Rect.m in Sources */,
-				4F85C99617B8575300604D82 /* CGGeometry+Size.m in Sources */,
-				4F85C99717B8575300604D82 /* CGGeometry+UIEdgeInsets.m in Sources */,
-				4F85C99817B8575300604D82 /* CLLocation+Coordinate.m in Sources */,
-				4F85C9A617B8575300604D82 /* UIColor+Effect.m in Sources */,
-				4F85C9A717B8575300604D82 /* UIColor+Hex.m in Sources */,
-				4F85C9A817B8575300604D82 /* UIImage+Alpha.m in Sources */,
-				4F85C9A917B8575300604D82 /* UIImage+Effect.m in Sources */,
-				4F85C9AA17B8575300604D82 /* UIImage+Resize.m in Sources */,
-				4F85C9AB17B8575300604D82 /* UIImage+Splash.m in Sources */,
-				4F85C9AC17B8575300604D82 /* UIScrollView+Scroll.m in Sources */,
-				4F85C9AD17B8575300604D82 /* UIView+Effect.m in Sources */,
-				4F85C9AE17B8575300604D82 /* UIView+Frame.m in Sources */,
 				4F9FD6E817B858BC00166870 /* FUIVerticalTabBar.m in Sources */,
 				4F9FD6E917B858BC00166870 /* FUIVerticalTabBarButton.m in Sources */,
 				4F9FD6EA17B858BC00166870 /* FUIVerticalTabBarController.m in Sources */,
-				4F90074917BA9971009D2480 /* NSArray+Query.m in Sources */,
-				4F90074A17BA9971009D2480 /* NSArray+Safe.m in Sources */,
-				4F90074B17BA9971009D2480 /* NSDate+Comparison.m in Sources */,
-				4F90074C17BA9971009D2480 /* NSDate+Converter.m in Sources */,
-				4F90074D17BA9971009D2480 /* NSDictionary+Safe.m in Sources */,
-				4F90074E17BA9971009D2480 /* NSMutableArray+Save.m in Sources */,
-				4F90074F17BA9971009D2480 /* NSMutableDictionary+Safe.m in Sources */,
-				4F90075017BA9971009D2480 /* NSObject+System.m in Sources */,
-				4F90075117BA9971009D2480 /* NSString+Case.m in Sources */,
-				4F90075217BA9971009D2480 /* NSString+Path.m in Sources */,
-				4F90075317BA9971009D2480 /* NSString+Regex.m in Sources */,
-				4F90075417BA9971009D2480 /* NSString+Security.m in Sources */,
-				4F90075517BA9971009D2480 /* NSURL+Query.m in Sources */,
-				4F90075617BA9971009D2480 /* NSUserDefaults+Custom.m in Sources */,
 				4F90077D17BA9B3E009D2480 /* FUIAlertView.m in Sources */,
 				4F90077E17BA9B3E009D2480 /* FUIButton.m in Sources */,
 				4F90077F17BA9B3E009D2480 /* FUICellBackgroundView.m in Sources */,

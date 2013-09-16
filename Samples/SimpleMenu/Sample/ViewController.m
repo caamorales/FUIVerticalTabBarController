@@ -10,6 +10,8 @@
 #import "FUIVerticalTabBarButton.h"
 #import "UIColor+FlatUI.h"
 
+static NSString *CellIdentifier = @"Cell";
+
 @interface ViewController ()
 @end
 
@@ -19,15 +21,14 @@
 {
     self = [super init];
     if (self) {
-        
-        self.title = [@"Settings" uppercaseString];
-        UIImage *selectedImage = [UIImage imageNamed:@"tabBarIcon_settings_selected" andColored:[UIColor colorFromHexCode:@"1f2733"]];
-        UIImage *unselectedImage = [UIImage imageNamed:@"tabBarIcon_settings_unselected" andColored:[UIColor colorFromHexCode:@"c8d1de"]];
+                
+        UIImage *selectedImage = [UIImage circularImageWithColor:[UIColor colorFromHexCode:@"1f2733"] size:CGSizeMake(20.0, 20.0)];
+        UIImage *unselectedImage = [UIImage circularImageWithColor:[UIColor colorFromHexCode:@"c8d1de"] size:CGSizeMake(20.0, 20.0)];
         
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:self.title image:nil tag:1];
         [self.tabBarItem setFinishedSelectedImage:selectedImage withFinishedUnselectedImage:unselectedImage];
         
-        NSInteger randomCount = random()%30;
+        NSInteger randomCount = random()%10;
         [self.tabBarItem setBadgeValue:[NSString stringWithFormat:@"%d", randomCount]];
         
         self.view.backgroundColor = [UIColor whiteColor];
@@ -42,7 +43,8 @@
 {
     [super viewDidLoad];
     
-    [self setWantsFullScreenLayout:NO];
+    [self setWantsFullScreenLayout:YES];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -53,10 +55,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    NSInteger count = [FUIVerticalTabBarButton badgeCountForValue:self.tabBarItem.badgeValue];
-    count--;
-    [self.tabBarItem setBadgeValue:[NSString stringWithFormat:@"%d",count]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -67,6 +65,45 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
+}
+
+
+#pragma mark - UITableViewDataSource Methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 20;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell.textLabel.text = [NSString stringWithFormat:@"Cell %d", indexPath.row+1];
+    
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0;
+}
+
+
+#pragma mark - UITableViewDelegate Methods
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
 }
 
 

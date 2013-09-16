@@ -13,27 +13,9 @@
 #define kVerticalTabBarButtonHeight 30.0
 #define kVerticalTabBarButtonMargin 8.0
 
-//@interface FUIVerticalTabBarBadgeLabel : UILabel
-//
-//- (void)setPersistentBackgroundColor:(UIColor *)color;
-//
-//@end
-//
-//@implementation FUIVerticalTabBarBadgeLabel
-//
-//- (void)setPersistentBackgroundColor:(UIColor*)color {
-//    super.backgroundColor = color;
-//}
-//
-//- (void)setBackgroundColor:(UIColor *)color {
-//    // do nothing - background color never changes
-//}
-//
-//@end
-
-
 @interface FUIVerticalTabBarButton () 
 @property (nonatomic, strong) UIView *readingIndicatorView;
+@property (nonatomic, strong) UIButton *badgeView;
 @end
 
 @implementation FUIVerticalTabBarButton
@@ -63,23 +45,27 @@
 
 - (UIButton *)badgeView
 {
-    UIButton *badgeView = [UIButton buttonWithType:UIButtonTypeCustom];
+    _badgeView = [UIButton buttonWithType:UIButtonTypeCustom];
+    _badgeView.userInteractionEnabled = NO;
+    _badgeView.adjustsImageWhenHighlighted = YES;
     
-    badgeView.titleLabel.font = _badgeTextFont;
-    badgeView.titleLabel.textAlignment = NSTextAlignmentCenter;
+    _badgeView.titleLabel.textAlignment = NSTextAlignmentCenter;
     
-    [badgeView setTitle:_badgeValue forState:UIControlStateNormal];
-    [badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
-    [badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
-
-    [badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:4.0] forState:UIControlStateNormal];
-    [badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
-
-    CGSize size = [_badgeValue sizeWithFont:badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
+    [_badgeView setTitle:_badgeValue forState:UIControlStateNormal];
+    [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
+    [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
+    
+    [_badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:4.0] forState:UIControlStateNormal];
+    [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
+    [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateSelected];
+    
+    _badgeView.titleLabel.font = _badgeTextFont;
+    
+    CGSize size = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
     size.width += kVerticalTabBarButtonMargin*2;
-    badgeView.frame = CGRectMake(0, 0, size.width, kVerticalTabBarButtonHeight);
+    _badgeView.frame = CGRectMake(0, 0, roundf(size.width), kVerticalTabBarButtonHeight);
     
-    return badgeView;
+    return _badgeView;
 }
 
 - (UIView *)readingIndicatorView
@@ -95,7 +81,7 @@
 
 + (NSInteger)badgeCountForValue:(NSString *)value
 {
-    NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
+    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     [f setNumberStyle:NSNumberFormatterNoStyle];
     NSNumber *badgeCount = [f numberFromString:value];
     
@@ -109,7 +95,7 @@
 {
     _badgeValue = value;
     
-    UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? [self badgeView] : nil;
+    UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? self.badgeView : nil;
     [self setAccessoryView:accessory];
 }
 
@@ -134,14 +120,16 @@
 
 #pragma mark - UITableViewCell Methods
 
-//- (void)setSelected:(BOOL)selected animate:(BOOL)animated
-//{
-//    [super setSelected:selected animated:animated];
-//}
-//
-//- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
-//{
-//    [super setHighlighted:highlighted animated:animated];
-//}
+- (void)setSelected:(BOOL)selected animate:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+//    [_badgeView setSelected:selected];
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
+{
+    [super setHighlighted:highlighted animated:animated];
+//    [_badgeView setHighlighted:highlighted];
+}
 
 @end

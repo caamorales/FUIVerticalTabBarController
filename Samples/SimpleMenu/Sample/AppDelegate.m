@@ -33,24 +33,30 @@
         _verticalTabBarController = [[FUIVerticalTabBarController alloc] init];
         _verticalTabBarController.tabBarHeaderHeight = 80.0;
         _verticalTabBarController.tabBarButtonHeight = 60.0;
-        _verticalTabBarController.maximumWidth = 240.0;
-        _verticalTabBarController.minimumWidth = 58.0;
+        _verticalTabBarController.maximumWidth = [UIScreen mainScreen].bounds.size.width-54.0;
         _verticalTabBarController.startAnimated = YES;
         _verticalTabBarController.startExpanded = NO;
-        _verticalTabBarController.delegate = self;
         
         _verticalTabBarController.tabBar.scrollMode = FUIVerticalTabBarScrollAlways;
         _verticalTabBarController.tabBar.backgroundColor = [UIColor colorFromHexCode:@"1f2733"];
         _verticalTabBarController.tabBar.selectedTabColor = [UIColor colorFromHexCode:@"c8602c"];
         _verticalTabBarController.tabBar.unselectedTabColor = [UIColor colorFromHexCode:@"28313f"];
+        _verticalTabBarController.tabBar.textFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
         _verticalTabBarController.tabBar.textColor = [UIColor colorFromHexCode:@"c8d1de"];
-        _verticalTabBarController.tabBar.textFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0];
+        _verticalTabBarController.tabBar.highlightedTextColor = _verticalTabBarController.tabBar.unselectedTabColor;
         _verticalTabBarController.tabBar.badgeTextColor = [UIColor whiteColor];
         _verticalTabBarController.tabBar.badgeTextFont = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
+        
+//        UISearchBar *searchBar = [[UISearchBar alloc] init];
+//        UIToolbar *toolBar = [[UIToolbar alloc] init];
+//        [toolBar setItems:@[searchBar]];
+//        _verticalTabBarController.toolBar = searchBar;
 
         NSMutableArray *viewControllers = [NSMutableArray new];
         for (int i = 0; i < 5; i++) {
             ViewController *vc = [[ViewController alloc] init];
+            
+            vc.title = [NSString stringWithFormat:@"Section %d", i+1];
             
             UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
             

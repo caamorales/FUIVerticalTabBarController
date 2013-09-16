@@ -143,12 +143,6 @@
     button.badgeTextColor = _badgeTextColor;
     button.badgeTextFont = _badgeTextFont;
     button.badgeColor = _selectedTabColor;
-
-//    button.indentationLevel = 1;
-//    button.indentationWidth = 10.0;
-//    
-//    button.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-//    [button.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(indentation)-[textLabel]-(indentation)-|" options:0 metrics:@{@"indentation": @150} views:@{@"textLabel":button.textLabel}]];
     
     return button;
 }

@@ -41,15 +41,15 @@
 /**  */
 @property (nonatomic, getter = isExpanded) BOOL expanded;
 /**  */
-@property (nonatomic, strong) UIImage *headerImage;
-/**  */
 @property (nonatomic) BOOL startAnimated;
 /**  */
 @property (nonatomic) BOOL startExpanded;
 /**  */
-@property (nonatomic, strong) UIToolbar *toolBar;
+@property (nonatomic, strong) UIView *headerView;
 /**  */
-@property (nonatomic) BOOL adjustToolBarToCurrentWidth;
+@property (nonatomic, strong) UIView *bottomView;
+/**  */
+@property (nonatomic) BOOL adjustBottomViewWhenPanning;
 
 
 /**
@@ -101,6 +101,9 @@
 
 /**  */
 - (BOOL)verticalTabBarControllerContractWhenSelecting:(FUIVerticalTabBarController *)tabBarController;
+
+/**  */
+- (void)verticalTabBarControllerWillContract:(FUIVerticalTabBarController *)tabBarController;
 
 /**  */
 - (void)verticalTabBarControllerDidReset:(FUIVerticalTabBarController *)tabBarController;
