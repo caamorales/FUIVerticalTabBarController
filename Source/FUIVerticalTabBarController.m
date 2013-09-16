@@ -246,16 +246,6 @@ static CGPoint panningHorizontalPosition;
     }
 }
 
-- (void)setTabBarHeaderHeight:(CGFloat)height
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _tabBarHeaderHeight = 44.0;
-    else _tabBarHeaderHeight = height;
-    
-    if (IOS_NEWER_OR_EQUAL_TO_7) {
-        _tabBarHeaderHeight+=[UIApplication sharedApplication].statusBarFrame.size.height;
-    }
-}
-
 - (void)setMinimumWidth:(CGFloat)width
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _minimumWidth = 0;
