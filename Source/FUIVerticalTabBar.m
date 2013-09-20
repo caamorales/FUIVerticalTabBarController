@@ -151,8 +151,14 @@
 {
     UITabBarItem *item = [self.items objectAtIndex:indexPath.row];
     
+#ifdef __IPHONE_7_0
+    button.imageView.highlightedImage = item.selectedImage;
+    button.imageView.image = item.image;
+#else
     button.imageView.highlightedImage = item.finishedSelectedImage;
     button.imageView.image = item.finishedUnselectedImage;
+#endif
+    
     button.textLabel.text = item.title;
     button.contentView.tag = indexPath.row;
     button.tag = indexPath.row;
@@ -163,6 +169,8 @@
 
 - (void)updateContentAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"%s",__FUNCTION__);
+    
     FUIVerticalTabBarButton *button = (FUIVerticalTabBarButton *)[self cellForRowAtIndexPath:indexPath];
     [self configureTarBarButton:button atIndexPath:indexPath];
 }

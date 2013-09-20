@@ -31,11 +31,18 @@
     if (!_verticalTabBarController)
     {
         _verticalTabBarController = [[FUIVerticalTabBarController alloc] init];
-        _verticalTabBarController.tabBarHeaderHeight = 80.0;
         _verticalTabBarController.tabBarButtonHeight = 60.0;
         _verticalTabBarController.maximumWidth = [UIScreen mainScreen].bounds.size.width-54.0;
         _verticalTabBarController.startAnimated = YES;
         _verticalTabBarController.startExpanded = NO;
+        
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication sharedApplication].statusBarFrame.size.width, 64.0)];
+        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 20.0, _verticalTabBarController.maximumWidth, 44.0)];
+        searchBar.barStyle = UISearchBarStyleMinimal;
+        searchBar.barTintColor = [UIColor clearColor];
+        searchBar.placeholder = @"Search";
+        [headerView addSubview:searchBar];
+        _verticalTabBarController.headerView = headerView;
         
         _verticalTabBarController.tabBar.scrollMode = FUIVerticalTabBarScrollAlways;
         _verticalTabBarController.tabBar.backgroundColor = [UIColor colorFromHexCode:@"1f2733"];
@@ -47,29 +54,28 @@
         _verticalTabBarController.tabBar.badgeTextColor = [UIColor whiteColor];
         _verticalTabBarController.tabBar.badgeTextFont = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
         
-//        UISearchBar *searchBar = [[UISearchBar alloc] init];
-//        UIToolbar *toolBar = [[UIToolbar alloc] init];
-//        [toolBar setItems:@[searchBar]];
-//        _verticalTabBarController.toolBar = searchBar;
-
-        NSMutableArray *viewControllers = [NSMutableArray new];
-        for (int i = 0; i < 5; i++) {
-            ViewController *vc = [[ViewController alloc] init];
-            
-            vc.title = [NSString stringWithFormat:@"Section %d", i+1];
-            
-            UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
-            
-            UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:_verticalTabBarController action:@selector(switchMenu:)];
-            [vc.navigationItem setLeftBarButtonItem:menuItem];
-            
-            [viewControllers addObject:nc];
-        }
-        [_verticalTabBarController setViewControllers:viewControllers];
-        
-        _verticalTabBarController.selectedIndex = 0;
+        [self setupControllers];
     }
     return _verticalTabBarController;
+}
+
+- (void)setupControllers
+{
+    NSMutableArray *navigationcontrollers = [NSMutableArray new];
+    for (int i = 0; i < 5; i++)
+    {
+        ViewController *vc = [[ViewController alloc] init];
+        vc.title = [NSString stringWithFormat:@"Section %d", i+1];
+        
+        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
+        [navigationcontrollers addObject:nc];
+        
+        UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:_verticalTabBarController action:@selector(switchMenu:)];
+        [vc.navigationItem setLeftBarButtonItem:menuItem];
+    }
+    
+    [_verticalTabBarController setViewControllers:navigationcontrollers];
+    _verticalTabBarController.selectedIndex = 0;
 }
 
 

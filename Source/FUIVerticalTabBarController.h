@@ -26,30 +26,30 @@
 @property (nonatomic, readwrite, strong) FUIVerticalTabBar *tabBar;
 /** The array containing all the setted viewcontrollers. */
 @property (nonatomic, readwrite, copy) NSArray *viewControllers;
-/** The selected and showed viewcontroller */
+/** The selected and showed viewcontroller. */
 @property (nonatomic, readwrite, assign) UIViewController *selectedViewController;
-/** The index of the selected viewcontroller */
+/** The index of the selected viewcontroller. */
 @property (nonatomic, readwrite, assign) NSUInteger selectedIndex;
-/**  */
-@property (nonatomic, readwrite, assign) CGFloat tabBarHeaderHeight;
-/**  */
+/** The tab bar button height. */
 @property (nonatomic, readwrite, assign) CGFloat tabBarButtonHeight;
 /** The TabBar maximum width. */
 @property (nonatomic, readwrite, assign) CGFloat maximumWidth;
 /** The TabBar minimum width. */
 @property (nonatomic, readwrite, assign) CGFloat minimumWidth;
-/**  */
+/** YES if the menu is expanded. */
 @property (nonatomic, getter = isExpanded) BOOL expanded;
-/**  */
-@property (nonatomic) BOOL startAnimated;
-/**  */
+/** YES if the menu should start expanded. Default NO. */
 @property (nonatomic) BOOL startExpanded;
-/**  */
+/** YES if the menu should start expanding animated. Default NO. */
+@property (nonatomic) BOOL startAnimated;
+/** An additional header view for the section tabs. You might use this for placing a logo, a custom view or even a search bar. */
 @property (nonatomic, strong) UIView *headerView;
-/**  */
-@property (nonatomic, strong) UIView *bottomView;
-/**  */
-@property (nonatomic) BOOL adjustBottomViewWhenPanning;
+/** An additional footer view for the section tabs. Use this as a toolbar. */
+@property (nonatomic, strong) UIView *footerView;
+/** Optionaly, you can set this property to YES if you want that the footer view resize while panning. */
+@property (nonatomic) BOOL adjustFooterViewWhenPanning;
+/** */
+@property (nonatomic, strong) UIColor *statusBarColor;
 
 
 /**
@@ -61,14 +61,13 @@
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated;
 
 /**
- * Tells the tabBar that the device will rotate so it can update it's UI elements.
-*/
-- (void)willRotateTabBar;
-
-/**  */
+ * Opens and closes the vertical menu.
+ */
 - (void)switchMenu:(id)sender;
 
-/**  */
+/**
+ * Removes all the content of the tar bar controller, including subviews and child view controllers in it.
+ */
 - (void)reset;
 
 @end
@@ -104,6 +103,9 @@
 
 /**  */
 - (void)verticalTabBarControllerWillContract:(FUIVerticalTabBarController *)tabBarController;
+
+/**  */
+- (void)verticalTabBarControllerWillExpand:(FUIVerticalTabBarController *)tabBarController;
 
 /**  */
 - (void)verticalTabBarControllerDidReset:(FUIVerticalTabBarController *)tabBarController;

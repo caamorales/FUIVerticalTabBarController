@@ -10,14 +10,11 @@
 #import "FUIVerticalTabBarController.h"
 #import "FUIVerticalTabBarButton.h"
 
-#define IOS_OLDER_THAN_7 ( [ [ [ UIDevice currentDevice ] systemVersion ] floatValue ] < 7.0 )
-#define IOS_NEWER_OR_EQUAL_TO_7 ( [ [ [ UIDevice currentDevice ] systemVersion ] floatValue ] >= 7.0 )
-
 static CGPoint panningHorizontalPosition;
 
-@interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate> {
-    BOOL _didSelect;
-}
+@interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate>
+@property (nonatomic, strong) UIView *statusBarBackground;
+@property (nonatomic) BOOL didSelect;
 @end
 
 @implementation FUIVerticalTabBarController
@@ -40,6 +37,10 @@ static CGPoint panningHorizontalPosition;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (IOS_NEWER_OR_EQUAL_TO_7 && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.view addSubview:self.statusBarBackground];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -77,26 +78,39 @@ static CGPoint panningHorizontalPosition;
 {
     if (!_tabBar)
     {
-        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _maximumWidth, self.view.bounds.size.height)];
+        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _maximumWidth-1, self.view.bounds.size.height)];
         _tabBar.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin;
         _tabBar.delegate = self;
         _tabBar.canCancelContentTouches = YES;
         
         _tabBar.tableHeaderView = _headerView;
         
-        if (_bottomView) {
+        if (_footerView) {
             CGRect _tabBarRect = _tabBar.frame;
-            _tabBarRect.size.height -= _bottomView.frame.size.height;
+            _tabBarRect.size.height -= _footerView.frame.size.height;
             _tabBar.frame = _tabBarRect;
             
-            CGRect bottomViewRect = _bottomView.frame;
-            bottomViewRect.origin.y = _tabBarRect.size.height;
-            _bottomView.frame = bottomViewRect;
+            CGRect footerViewRect = _footerView.frame;
+            footerViewRect.origin.y = _tabBarRect.size.height;
+            _footerView.frame = footerViewRect;
             
-            [self.view insertSubview:_bottomView aboveSubview:_tabBar];
+            [self.view insertSubview:_footerView aboveSubview:_tabBar];
         }
     }
     return _tabBar;
+}
+
+- (UIView *)statusBarBackground
+{
+    if (!_statusBarBackground) {
+        _statusBarBackground = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].statusBarFrame];
+        
+        if (!_statusBarColor) _statusBarColor = [UIColor blackColor];
+        _statusBarBackground.backgroundColor = _statusBarColor;
+        
+        _statusBarBackground.alpha = _startExpanded ? 1.0 : 0.0;
+    }
+    return _statusBarBackground;
 }
 
 - (UIViewController *)selectedViewController
@@ -122,18 +136,25 @@ static CGPoint panningHorizontalPosition;
 
 - (void)setViewControllers:(NSArray *)viewControllers
 {
-    NSLog(@"%s",__FUNCTION__);
-    
     _viewControllers = viewControllers;
     
     //// Creates the tab bar items
-    if (self.tabBar)
-    {
+    if (self.tabBar) {
         NSMutableArray *tabBarItems = [NSMutableArray arrayWithCapacity:[_viewControllers count]];
         
         for (UIViewController *vc in _viewControllers) {
-            [tabBarItems addObject:vc.tabBarItem];
-            [vc.tabBarItem addObserver:self forKeyPath:@"badgeValue" options:NSKeyValueObservingOptionNew context:nil];
+            
+            UITabBarItem *tabBarItem = vc.tabBarItem;
+            [tabBarItems addObject:tabBarItem];
+            
+//            [tabBarItem addObserver:self forKeyPath:@"badgeValue" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:nil];
+//            [tabBarItem addObserver:self forKeyPath:@"finishedSelectedImage" options:NSKeyValueObservingOptionInitial context:nil];
+//            [tabBarItem addObserver:self forKeyPath:@"finishedUnselectedImage" options:NSKeyValueObservingOptionInitial context:nil];
+//            
+//            [UITabBarItem automaticallyNotifiesObserversForKey:@"badgeValue"];
+//            [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedSelectedImage"];
+//            [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedUnselectedImage"];
+            
             vc.view.clipsToBounds = YES;
             
             if ([vc isKindOfClass:[UINavigationController class]]) {
@@ -144,7 +165,7 @@ static CGPoint panningHorizontalPosition;
                 tapGesture.delegate = self;
                 [nc.view addGestureRecognizer:tapGesture];
 
-                UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanning:)];
+                UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
                 panGesture.maximumNumberOfTouches = 1;
                 panGesture.minimumNumberOfTouches = 1;
                 panGesture.delegate = self;
@@ -172,7 +193,7 @@ static CGPoint panningHorizontalPosition;
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex
 {
-    if (selectedIndex != _selectedIndex && selectedIndex < [self.viewControllers count])
+    if (selectedIndex < [self.viewControllers count] && selectedIndex != _selectedIndex)
     {
         //// Add the new view controller to hierarchy
         UIViewController *selectedViewController = [self.viewControllers objectAtIndex:selectedIndex];
@@ -195,7 +216,8 @@ static CGPoint panningHorizontalPosition;
         }
 
         selectedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [self.view addSubview:selectedViewController.view];
+        if (_statusBarBackground) [self.view insertSubview:selectedViewController.view belowSubview:_statusBarBackground];
+        else [self.view addSubview:selectedViewController.view];
         
         if ([self.delegate verticalTabBarControllerContractWhenSelecting:self] && !_didSelect) {
             _didSelect = YES;
@@ -220,6 +242,10 @@ static CGPoint panningHorizontalPosition;
         //// Inform the delegate of the new selection
         if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:didSelectViewController:)]) {
             [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
+        }
+        
+        if (IOS_NEWER_OR_EQUAL_TO_7) {
+            [self.view bringSubviewToFront:_statusBarBackground];
         }
     }
     else if (selectedIndex == _selectedIndex && _selectedIndex < self.viewControllers.count)
@@ -269,10 +295,10 @@ static CGPoint panningHorizontalPosition;
     else _startExpanded = expanded;
 }
 
-- (void)setUserInteractionEnabled:(BOOL)enabled ForView:(UIView *)view
+- (void)enableUserInteraction:(BOOL)enable
 {
-    for (UIView *subview in view.subviews) {
-        subview.userInteractionEnabled = enabled;
+    for (UIView *subview in self.selectedViewController.view.subviews) {
+        subview.userInteractionEnabled = enable;
     }
 }
 
@@ -287,6 +313,10 @@ static CGPoint panningHorizontalPosition;
 
 - (void)expandMenu
 {
+    if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerWillExpand:)]) {
+        [_delegate verticalTabBarControllerWillExpand:self];
+    }
+    
     [self expandMenuWithDuration:0.3];
 }
 
@@ -294,22 +324,23 @@ static CGPoint panningHorizontalPosition;
 {
     if (_selectedIndex < self.viewControllers.count)
     {
+        _expanded = YES;
         UIViewController *selectedViewController = [self.viewControllers objectAtIndex:_selectedIndex];
-        [self setUserInteractionEnabled:NO ForView:selectedViewController.view];
-        _tabBar.userInteractionEnabled = NO;
+        [self enableUserInteraction:NO];
         
-        CGRect bottomViewRect = _bottomView.frame;
-        bottomViewRect.size.width = _maximumWidth;
+        CGRect footerRect = _footerView.frame;
+        footerRect.size.width = _maximumWidth;
         
         [UIView animateWithDuration:duration
                               delay:0
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
-                         animations:^{selectedViewController.view.frame = [self expandedRect];
-                             if (_bottomView && _adjustBottomViewWhenPanning) _bottomView.frame = bottomViewRect;
+                         animations:^{
+                             selectedViewController.view.frame = [self expandedRect];
+
+                             if (_statusBarBackground) [self updateStatusBar];
+                             if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
                          }
-                         completion:^(BOOL finished){_expanded = YES;
-                             _tabBar.userInteractionEnabled = YES;
-                         }];
+                         completion:NULL];
     }
 }
 
@@ -326,33 +357,35 @@ static CGPoint panningHorizontalPosition;
 {
     if (_selectedIndex < self.viewControllers.count)
     {
+        _expanded = NO;
         UIViewController *selectedViewController = [self.viewControllers objectAtIndex:_selectedIndex];
-        _tabBar.userInteractionEnabled = NO;
         
-        CGRect bottomViewRect = _bottomView.frame;
-        bottomViewRect.size.width = _minimumWidth;
+        CGRect footerRect = _footerView.frame;
+        footerRect.size.width = _minimumWidth;
         
         [UIView animateWithDuration:duration
                               delay:0
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
-                         animations:^{selectedViewController.view.frame = [self contractedRect];
-                             if (_bottomView && _adjustBottomViewWhenPanning) _bottomView.frame = bottomViewRect;
+                         animations:^{
+                             selectedViewController.view.frame = [self contractedRect];
+                             
+                             if (_statusBarBackground) [self updateStatusBar];
+                             if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
                          }
-                         completion:^(BOOL finished){_expanded = NO;
-                             [self setUserInteractionEnabled:YES ForView:selectedViewController.view];
-                             _tabBar.userInteractionEnabled = YES;
+                         completion:^(BOOL finished){
+                             
+                             [self enableUserInteraction:YES];
                              _didSelect = NO;
                          }];
     }
 }
 
-- (void)handlePanning:(UIPanGestureRecognizer *)panGesture
+- (void)handlePan:(UIPanGestureRecognizer *)panGesture
 {
     if (![self.delegate verticalTabBarControllerCanMoveHorizontally:self]) {
         return;
     }
     
-    [self.view bringSubviewToFront:[panGesture view]];
     CGPoint newPoint = [panGesture translationInView:self.view];
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
@@ -371,60 +404,84 @@ static CGPoint panningHorizontalPosition;
             frame.origin = newPoint;
             [panGesture.view setFrame:frame];
             
-            if (_bottomView) [self adjustBottomViewToWidth:newPoint.x];
+            if (_footerView && _adjustFooterViewWhenPanning) [self adjustFooterViewWidth:newPoint.x];
+            if (_statusBarBackground) [self adjustStatusBarAlpha:newPoint.x];
         }
     }
     else if (panGesture.state == UIGestureRecognizerStateEnded)
     {
-        CGFloat menuWidth = _maximumWidth - _minimumWidth;
-        CGFloat threshold = 0.2;
-        CGFloat velocityX = (threshold * [panGesture velocityInView:self.view].x);
-        
-        if (abs(velocityX) < 100) {
-            if (newPoint.x > roundf(menuWidth/2)) [self expandMenu];
-            else [self contractMenu];
-        }
+        if (newPoint.x == _minimumWidth) _expanded = NO;
+        else if (newPoint.x == _maximumWidth) _expanded = YES;
         else {
-            CGFloat duration = (ABS(velocityX) * (threshold/1000)) + threshold;
-            if (velocityX > 0) [self expandMenuWithDuration:duration];
-            else [self contractMenuWithDuration:duration];
+            CGFloat menuWidth = roundf(_maximumWidth - _minimumWidth);
+            CGFloat threshold = 0.2;
+            CGFloat velocityX = (threshold * [panGesture velocityInView:self.view].x);
+            
+            if (abs(velocityX) < 100) {
+                if (newPoint.x > roundf(menuWidth/2)) [self expandMenu];
+                else [self contractMenu];
+            }
+            else {
+                CGFloat duration = (ABS(velocityX) * (threshold/1000)) + threshold;
+                if (velocityX > 0) [self expandMenuWithDuration:duration];
+                else [self contractMenuWithDuration:duration];
+            }
         }
-    }
-}
-
-- (void)adjustBottomViewToWidth:(CGFloat)width
-{
-    if (_adjustBottomViewWhenPanning) {
-        if (width > _maximumWidth) width = _maximumWidth;
-        else if (width < _minimumWidth) width = _minimumWidth;
-        
-        CGRect bottomViewRect = _bottomView.frame;
-        bottomViewRect.size.width = width;
-        
-        [UIView animateWithDuration:0.01 delay:0
-                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
-                         animations:^{_bottomView.frame = bottomViewRect;} completion:NULL];
     }
 }
 
 - (void)handleTap:(UITapGestureRecognizer *)tapGesture
 {
     if (_expanded) {
-        
         if ([self.delegate verticalTabBarControllerContractAfterTap:self] && [tapGesture.view isEqual:self.selectedViewController.view]) {
             [self contractMenu];
         }
     }
 }
 
-- (void)willRotateTabBar
+- (void)adjustFooterViewWidth:(CGFloat)xPos
 {
-    self.tabBar.selectedItem = [self.tabBar.items objectAtIndex:_selectedIndex];
+    CGFloat width = (xPos > _maximumWidth) ? _maximumWidth : _minimumWidth;
+    
+    CGRect footerRect = _footerView.frame;
+    footerRect.size.width = width;
+    
+    [UIView animateWithDuration:0.01 delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
+                     animations:^{_footerView.frame = footerRect;} completion:NULL];
 }
 
-- (void)didRotateTabBar
+- (void)adjustStatusBarAlpha:(CGFloat)xPos
 {
-    self.tabBar.selectedItem = [self.tabBar.items objectAtIndex:_selectedIndex];
+    if (xPos > _minimumWidth) {
+        CGFloat menuWidth = roundf(_maximumWidth - _minimumWidth);
+        CGFloat alpha = (_minimumWidth-xPos)/menuWidth;
+        
+        if (alpha < 0) alpha *= -1;
+        
+        UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+        if ([UIApplication sharedApplication].statusBarStyle != style) {
+            [self updateStatusBarStyle:style];
+        }
+        
+        [UIView animateWithDuration:0.01 delay:0
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
+                         animations:^{_statusBarBackground.alpha = alpha;} completion:NULL];
+    }
+}
+
+- (void)updateStatusBar
+{
+    _statusBarBackground.alpha = _expanded ? 1.0 : 0.0;
+    
+    UIStatusBarStyle style = _expanded ?  UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+    [self updateStatusBarStyle:style];
+}
+
+- (void)updateStatusBarStyle:(UIStatusBarStyle)style
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)reset
@@ -452,8 +509,7 @@ static CGPoint panningHorizontalPosition;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (!_didSelect)
-    {
+    if (!_didSelect) {
         FUIVerticalTabBarButton *button = (FUIVerticalTabBarButton *)[tableView cellForRowAtIndexPath:indexPath];
         if (button.isUnread) [button setUnread:NO];
         
@@ -514,12 +570,34 @@ static CGPoint panningHorizontalPosition;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    NSLog(@"%s",__FUNCTION__);
+
     if ([object isKindOfClass:[UITabBarItem class]]) {
+        
+        NSLog(@"observeValueForKeyPath found UITabBarItem");
         
         NSInteger buttonIndex = [_tabBar.items indexOfObject:object];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:buttonIndex inSection:0];
         [_tabBar updateContentAtIndexPath:indexPath];
     }
+}
+
+
+#pragma mark - View Auto-Rotation
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    self.tabBar.selectedItem = [self.tabBar.items objectAtIndex:_selectedIndex];
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? YES : NO;
 }
 
 

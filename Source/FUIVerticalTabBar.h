@@ -19,30 +19,34 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @interface FUIVerticalTabBar : UITableView <UITableViewDataSource>
 
 /** The TabBar items of each viewcontroller. */
-@property (nonatomic, strong) NSArray *items;
+@property (nonatomic, copy) NSArray *items;
 /** The selected TabBar item. */
 @property (nonatomic, weak) UITabBarItem *selectedItem;
 /** The selection indicator image */
 @property (nonatomic, strong) UIImage *selectionIndicatorImage;
 /** The scrolling mode of the TabBar table. */
 @property (nonatomic, assign) FUIVerticalTabBarScrollMode scrollMode;
-/**  */
-@property (nonatomic, strong) UIColor *unselectedTabColor;
-/**  */
+/** The tab background's color for the selected state. */
 @property (nonatomic, strong) UIColor *selectedTabColor;
-/**  */
+/** The tab background's color for the unselected state. */
+@property (nonatomic, strong) UIColor *unselectedTabColor;
+/** The tab text's color for the normal state. */
 @property (nonatomic, strong) UIColor *textColor;
-/**  */
+/** The tab text's color for the highlighted state. */
 @property (nonatomic, strong) UIColor *highlightedTextColor;
-/**  */
+/** The tab text's font. */
 @property (nonatomic, strong) UIFont *textFont;
-/**  */
+/** The tab badge's text color for normal state. */
 @property (nonatomic, strong) UIColor *badgeTextColor;
-/**  */
+/** The tab badge's text font. */
 @property (nonatomic, strong) UIFont *badgeTextFont;
 
 
-/**  */
+/** 
+ * Updates the content of a particular button from an index.
+ * 
+ * @param indexPath The index path of the button.
+ */
 - (void)updateContentAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
