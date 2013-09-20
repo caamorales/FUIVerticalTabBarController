@@ -23,6 +23,8 @@ static CGPoint panningHorizontalPosition;
 {
     if (self = [super init])
     {
+        _selectedIndex = -1;
+        
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             _startAnimated = NO;
             _startExpanded = NO;
@@ -176,8 +178,6 @@ static CGPoint panningHorizontalPosition;
         _tabBar.items = tabBarItems;
     }
     
-    // Sets the value for the first time as -1 for the viewController to load itself properly
-    _selectedIndex = -1;
     self.selectedIndex = _selectedIndex;
 }
 
@@ -242,10 +242,6 @@ static CGPoint panningHorizontalPosition;
         //// Inform the delegate of the new selection
         if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:didSelectViewController:)]) {
             [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
-        }
-        
-        if (IOS_NEWER_OR_EQUAL_TO_7) {
-            [self.view bringSubviewToFront:_statusBarBackground];
         }
     }
     else if (selectedIndex == _selectedIndex && _selectedIndex < self.viewControllers.count)
