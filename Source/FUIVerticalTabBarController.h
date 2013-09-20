@@ -36,6 +36,8 @@
 @property (nonatomic, readwrite, assign) CGFloat maximumWidth;
 /** The TabBar minimum width. */
 @property (nonatomic, readwrite, assign) CGFloat minimumWidth;
+/** The TabBar's separators height. */
+@property (nonatomic, readwrite, assign) CGFloat separatorHeight;
 /** YES if the menu is expanded. */
 @property (nonatomic, getter = isExpanded) BOOL expanded;
 /** YES if the menu should start expanded. Default NO. */

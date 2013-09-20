@@ -55,6 +55,25 @@
     else return nil;
 }
 
+- (FUIVerticalTabBarButton *)verticalTabBarButtonForIndexPath:(NSIndexPath *)indexPath
+{
+    FUIVerticalTabBarButton *button = [[FUIVerticalTabBarButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FUIVerticalTabBarIdentifier];
+    
+    button.height = [self.delegate tableView:self heightForRowAtIndexPath:indexPath];
+    button.foregroundColor = _selectedTabColor;
+    button.backgroundColor = self.backgroundColor;
+    button.selectedBackgroundView.backgroundColor = _selectedTabColor;
+    button.backgroundView.backgroundColor = _unselectedTabColor;
+    button.textLabel.textColor = _textColor;
+    button.textLabel.highlightedTextColor = _highlightedTextColor;
+    button.textLabel.font = _textFont;
+    button.badgeTextColor = _badgeTextColor;
+    button.badgeTextFont = _badgeTextFont;
+    button.badgeColor = _selectedTabColor;
+    
+    return button;
+}
+
 
 #pragma mark - Setter Methods
 
@@ -128,30 +147,11 @@
     return button;
 }
 
-- (FUIVerticalTabBarButton *)verticalTabBarButtonForIndexPath:(NSIndexPath *)indexPath
-{
-    FUIVerticalTabBarButton *button = [[FUIVerticalTabBarButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FUIVerticalTabBarIdentifier];
-    
-    button.height = [self.delegate tableView:self heightForRowAtIndexPath:indexPath];
-    button.foregroundColor = _selectedTabColor;
-    button.backgroundColor = self.backgroundColor;
-    button.selectedBackgroundView.backgroundColor = _selectedTabColor;
-    button.backgroundView.backgroundColor = _unselectedTabColor;
-    button.textLabel.textColor = _textColor;
-    button.textLabel.highlightedTextColor = _highlightedTextColor;
-    button.textLabel.font = _textFont;
-    button.badgeTextColor = _badgeTextColor;
-    button.badgeTextFont = _badgeTextFont;
-    button.badgeColor = _selectedTabColor;
-    
-    return button;
-}
-
 - (void)configureTarBarButton:(FUIVerticalTabBarButton *)button atIndexPath:(NSIndexPath *)indexPath
 {
     UITabBarItem *item = [self.items objectAtIndex:indexPath.row];
     
-#ifdef __IPHONE_7_0
+#ifdef IOS_NEWER_OR_EQUAL_TO_7
     button.imageView.highlightedImage = item.selectedImage;
     button.imageView.image = item.image;
 #else
@@ -169,8 +169,6 @@
 
 - (void)updateContentAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"%s",__FUNCTION__);
-    
     FUIVerticalTabBarButton *button = (FUIVerticalTabBarButton *)[self cellForRowAtIndexPath:indexPath];
     [self configureTarBarButton:button atIndexPath:indexPath];
 }

@@ -199,7 +199,7 @@ static CGPoint panningHorizontalPosition;
         UIViewController *selectedViewController = [self.viewControllers objectAtIndex:selectedIndex];
         [self addChildViewController:selectedViewController];
         
-        //// Set the expanded and contracted CGRect
+        //// Set the expanded and contracted rectangle
         CGRect rect = CGRectZero;
         if (_startExpanded) rect = [self expandedRect];
         else rect = _expanded ? [self expandedRect] : [self contractedRect];
@@ -530,6 +530,23 @@ static CGPoint panningHorizontalPosition;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return _tabBarButtonHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (section > 0) return (_separatorHeight > 0) ? _separatorHeight : 20.0;
+    return 0.0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (section > 0) {
+        CGFloat height = [tableView.delegate tableView:tableView heightForHeaderInSection:section];
+        UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _tabBar.frame.size.width, height)];
+        header.backgroundColor = [UIColor clearColor];
+        return header;
+    }
+    else return nil;
 }
 
 
