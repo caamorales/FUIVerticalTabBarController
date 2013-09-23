@@ -48,13 +48,6 @@
 
 #pragma mark - Getter Methods
 
-- (UITabBarItem *)selectedItem
-{
-    NSIndexPath *selectedRowIndexPath = self.indexPathForSelectedRow;
-    if (selectedRowIndexPath != nil) return [self.items objectAtIndex:selectedRowIndexPath.row];
-    else return nil;
-}
-
 - (FUIVerticalTabBarButton *)verticalTabBarButtonForIndexPath:(NSIndexPath *)indexPath
 {
     FUIVerticalTabBarButton *button = [[FUIVerticalTabBarButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FUIVerticalTabBarIdentifier];
@@ -72,6 +65,34 @@
     button.badgeColor = _selectedTabColor;
     
     return button;
+}
+
+- (UITabBarItem *)tabBarItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSArray *sectionItems = [self.items objectAtIndex:indexPath.section];
+    if (indexPath.row < sectionItems.count) return [sectionItems objectAtIndex:indexPath.row];
+    else return nil;
+}
+
+- (UITabBarItem *)selectedItem
+{
+    NSIndexPath *selectedIndexPath = self.indexPathForSelectedRow;
+    return [self tabBarItemAtIndexPath:selectedIndexPath];
+}
+
+- (NSInteger)countOnIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger count = 0;
+    for (int i = 0; i < indexPath.section; i++) {
+        for (int j = 0; j < indexPath.row; j++) {
+            
+            NSIndexPath *aIndexPath = [NSIndexPath indexPathForRow:j inSection:i];
+            if ([indexPath isEqual:aIndexPath]) return count;
+            else count++;
+        }
+    }
+    
+    return count;
 }
 
 
@@ -129,12 +150,13 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return [self.items count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.items count];
+    NSArray *sectionItems = [self.items objectAtIndex:section];
+    return [sectionItems count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -149,7 +171,7 @@
 
 - (void)configureTarBarButton:(FUIVerticalTabBarButton *)button atIndexPath:(NSIndexPath *)indexPath
 {
-    UITabBarItem *item = [self.items objectAtIndex:indexPath.row];
+    UITabBarItem *item = [self tabBarItemAtIndexPath:indexPath];
     
 #ifdef IOS_NEWER_OR_EQUAL_TO_7
     button.imageView.highlightedImage = item.selectedImage;
@@ -174,16 +196,16 @@
 }
 
 
-#pragma mark - Responding to Touch Events
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesBegan:touches withEvent:event];
-    
-    UITouch *touch = [touches anyObject];
-    if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
-        [self.delegate tableView:self didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:touch.view.tag inSection:0]];
-    }
-}
+//#pragma mark - Responding to Touch Events
+//
+//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+//{
+//    [super touchesBegan:touches withEvent:event];
+//    
+//    UITouch *touch = [touches anyObject];
+//    if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
+//        [self.delegate tableView:self didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:touch.view.tag inSection:0]];
+//    }
+//}
 
 @end

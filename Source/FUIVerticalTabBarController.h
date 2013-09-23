@@ -29,7 +29,7 @@
 /** The selected and showed viewcontroller. */
 @property (nonatomic, readwrite, assign) UIViewController *selectedViewController;
 /** The index of the selected viewcontroller. */
-@property (nonatomic, readwrite, assign) NSUInteger selectedIndex;
+@property (nonatomic, readwrite, strong) NSIndexPath *selectedIndexPath;
 /** The tab bar button height. */
 @property (nonatomic, readwrite, assign) CGFloat tabBarButtonHeight;
 /** The TabBar maximum width. */
@@ -52,6 +52,8 @@
 @property (nonatomic) BOOL adjustFooterViewWhenPanning;
 /** */
 @property (nonatomic, strong) UIColor *statusBarColor;
+/** */
+@property (nonatomic, getter = isShowingSideShadow) BOOL showSideShadow;
 
 
 /**

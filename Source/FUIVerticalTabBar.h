@@ -19,7 +19,7 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @interface FUIVerticalTabBar : UITableView <UITableViewDataSource>
 
 /** The TabBar items of each viewcontroller. */
-@property (nonatomic, copy) NSArray *items;
+@property (nonatomic, strong) NSArray *items;
 /** The selected TabBar item. */
 @property (nonatomic, weak) UITabBarItem *selectedItem;
 /** The selection indicator image */
@@ -40,6 +40,9 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @property (nonatomic, strong) UIColor *badgeTextColor;
 /** The tab badge's text font. */
 @property (nonatomic, strong) UIFont *badgeTextFont;
+
+
+- (UITabBarItem *)tabBarItemAtIndexPath:(NSIndexPath *)indexPath;
 
 
 /** 

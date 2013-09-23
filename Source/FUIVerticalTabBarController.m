@@ -23,12 +23,12 @@ static CGPoint panningHorizontalPosition;
 {
     if (self = [super init])
     {
-        _selectedIndex = -1;
-        
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             _startAnimated = NO;
             _startExpanded = NO;
         }
+        
+        _selectedIndexPath = [NSIndexPath indexPathForRow:-1 inSection:-1];
     }
     return self;
 }
@@ -80,7 +80,7 @@ static CGPoint panningHorizontalPosition;
 {
     if (!_tabBar)
     {
-        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _maximumWidth-1, self.view.bounds.size.height)];
+        _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _maximumWidth, self.view.bounds.size.height)];
         _tabBar.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin;
         _tabBar.delegate = self;
         _tabBar.canCancelContentTouches = YES;
@@ -115,13 +115,37 @@ static CGPoint panningHorizontalPosition;
     return _statusBarBackground;
 }
 
+- (UIViewController *)viewControllerAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (![self validIndexPath:indexPath]) {
+        return nil;
+    }
+    
+    NSArray *controllers = [self.viewControllers objectAtIndex:indexPath.section];
+    return [controllers objectAtIndex:indexPath.row];
+}
+
 - (UIViewController *)selectedViewController
 {
-    if (self.selectedIndex < [self.viewControllers count]) {
-        return [self.viewControllers objectAtIndex:self.selectedIndex];
-    }
-    return nil;
+    return [self viewControllerAtIndexPath:self.selectedIndexPath];
 }
+
+//- (NSIndexPath *)indexPathOfObject:(id)anObject
+//{
+//    for (int i = 0; i < self.viewControllers.count; i++) {
+//        NSArray *controllers = [self.viewControllers objectAtIndex:i];
+//        
+//        for (int j = 0; j < controllers.count; j++) {
+//            id object = [controllers objectAtIndex:j];
+//            
+//            if ([anObject isEqual:object]) {
+//                return [NSIndexPath indexPathForRow:j inSection:i];
+//            }
+//        }
+//    }
+//    
+//    return nil;
+//}
 
 - (CGRect)expandedRect
 {
@@ -131,6 +155,26 @@ static CGPoint panningHorizontalPosition;
 - (CGRect)contractedRect
 {
     return CGRectMake(_minimumWidth, 0, self.view.bounds.size.width-_minimumWidth, self.view.bounds.size.height);
+}
+
+- (BOOL)validIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath != nil && indexPath.section < INT_MAX && indexPath.row < INT_MAX) {
+        if (indexPath.section < self.viewControllers.count) {
+            NSArray *controllers = [self.viewControllers objectAtIndex:indexPath.section];
+            if (indexPath.row < controllers.count) {
+                return YES;
+            }
+            else return NO;
+        }
+        else return NO;
+    }
+    else return NO;
+}
+
+- (BOOL)sameIndexPath:(NSIndexPath *)indexPath
+{
+    return (indexPath && _selectedIndexPath.section == indexPath.section && _selectedIndexPath.row == indexPath.row) ? YES : NO;
 }
 
 
@@ -144,41 +188,55 @@ static CGPoint panningHorizontalPosition;
     if (self.tabBar) {
         NSMutableArray *tabBarItems = [NSMutableArray arrayWithCapacity:[_viewControllers count]];
         
-        for (UIViewController *vc in _viewControllers) {
+        for (NSArray *controllers in _viewControllers) {
             
-            UITabBarItem *tabBarItem = vc.tabBarItem;
-            [tabBarItems addObject:tabBarItem];
-            
-//            [tabBarItem addObserver:self forKeyPath:@"badgeValue" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:nil];
-//            [tabBarItem addObserver:self forKeyPath:@"finishedSelectedImage" options:NSKeyValueObservingOptionInitial context:nil];
-//            [tabBarItem addObserver:self forKeyPath:@"finishedUnselectedImage" options:NSKeyValueObservingOptionInitial context:nil];
-//            
-//            [UITabBarItem automaticallyNotifiesObserversForKey:@"badgeValue"];
-//            [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedSelectedImage"];
-//            [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedUnselectedImage"];
-            
-            vc.view.clipsToBounds = YES;
-            
-            if ([vc isKindOfClass:[UINavigationController class]]) {
-                UINavigationController *nc = (UINavigationController *)vc;
-                nc.navigationBar.clipsToBounds = YES;
+            NSMutableArray *items = [NSMutableArray arrayWithCapacity:[controllers count]];
+
+            for (UIViewController *vc in controllers) {
+                
+                UITabBarItem *tabBarItem = vc.tabBarItem;
+                [items addObject:tabBarItem];
+                
+//                [tabBarItem addObserver:self forKeyPath:@"badgeValue" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:nil];
+//                [tabBarItem addObserver:self forKeyPath:@"finishedSelectedImage" options:NSKeyValueObservingOptionInitial context:nil];
+//                [tabBarItem addObserver:self forKeyPath:@"finishedUnselectedImage" options:NSKeyValueObservingOptionInitial context:nil];
+//                
+//                [UITabBarItem automaticallyNotifiesObserversForKey:@"badgeValue"];
+//                [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedSelectedImage"];
+//                [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedUnselectedImage"];
+                
+                
+                UIViewController *controller = nil;
+                if ([vc isKindOfClass:[UINavigationController class]]) controller = (UINavigationController *)vc;
+                else controller = vc;
                 
                 UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
                 tapGesture.delegate = self;
-                [nc.view addGestureRecognizer:tapGesture];
-
+                [controller.view addGestureRecognizer:tapGesture];
+                
                 UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
                 panGesture.maximumNumberOfTouches = 1;
                 panGesture.minimumNumberOfTouches = 1;
                 panGesture.delegate = self;
-                [nc.view addGestureRecognizer:panGesture];
+                [controller.view addGestureRecognizer:panGesture];
+                
+                if (_showSideShadow) {
+                    controller.view.layer.shadowColor = [UIColor blackColor].CGColor;
+                    controller.view.layer.shadowOffset = CGSizeMake(-2, 0);
+                    controller.view.layer.shadowRadius = 1.0;
+                    controller.view.layer.masksToBounds = NO;
+                    controller.view.layer.rasterizationScale = [UIScreen mainScreen].scale;
+                    controller.view.layer.shouldRasterize = YES;
+                }
             }
+            
+            [tabBarItems addObject:items];
         }
 
         _tabBar.items = tabBarItems;
     }
     
-    self.selectedIndex = _selectedIndex;
+    self.selectedIndexPath = _selectedIndexPath;
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
@@ -186,17 +244,40 @@ static CGPoint panningHorizontalPosition;
     [self setViewControllers:viewControllers];
 }
 
-- (void)setSelectedViewController:(UIViewController *)selectedViewController
-{
-    self.selectedIndex = [self.viewControllers indexOfObject:selectedViewController];
-}
+//- (void)setSelectedViewController:(UIViewController *)selectedViewController
+//{
+//    NSIndexPath *indexPath = [self indexPathOfObject:selectedViewController];
+//    NSLog(@"********* %s indexPath : %@",__FUNCTION__,indexPath);
+//    
+//    self.selectedIndexPath = indexPath;
+//}
 
-- (void)setSelectedIndex:(NSUInteger)selectedIndex
+- (void)setSelectedIndexPath:(NSIndexPath *)indexPath
 {
-    if (selectedIndex < [self.viewControllers count] && selectedIndex != _selectedIndex)
+    if (![self validIndexPath:indexPath]) {
+        return;
+    }
+    
+    if ([self sameIndexPath:indexPath]) {
+        UIViewController *selectedViewController = [self viewControllerAtIndexPath:indexPath];
+        
+        if ([selectedViewController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nc = (UINavigationController *)selectedViewController;
+            if ([nc.viewControllers indexOfObject:nc.topViewController] != 0) {
+                [nc popToRootViewControllerAnimated:YES];
+            }
+        }
+        
+        [self contractMenu];
+        
+        if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:didSelectViewController:)]) {
+            [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
+        }
+    }
+    else if (indexPath.section < [self.viewControllers count])
     {
         //// Add the new view controller to hierarchy
-        UIViewController *selectedViewController = [self.viewControllers objectAtIndex:selectedIndex];
+        UIViewController *selectedViewController = [self viewControllerAtIndexPath:indexPath];
         [self addChildViewController:selectedViewController];
         
         //// Set the expanded and contracted rectangle
@@ -219,24 +300,24 @@ static CGPoint panningHorizontalPosition;
         if (_statusBarBackground) [self.view insertSubview:selectedViewController.view belowSubview:_statusBarBackground];
         else [self.view addSubview:selectedViewController.view];
         
+
         if ([self.delegate verticalTabBarControllerContractWhenSelecting:self] && !_didSelect) {
             _didSelect = YES;
             [self performSelector:@selector(contractMenu) withObject:nil afterDelay:0.2];
         }
         
         //// Remove the previously selected view controller (if any)
-        if (_selectedIndex < INT_MAX) {
-            UIViewController *previousViewController = [self.viewControllers objectAtIndex:_selectedIndex];
-            [previousViewController.view removeFromSuperview];
-            [previousViewController removeFromParentViewController];
-        }
+        UIViewController *previousViewController = [self viewControllerAtIndexPath:_selectedIndexPath];
+        [previousViewController.view removeFromSuperview];
+        [previousViewController removeFromParentViewController];
         
         //// Set the new selected index
-        _selectedIndex = selectedIndex;
-        
+        _selectedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
+        [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+
         //// Update the tabBar's item
-        if (selectedIndex < [self.tabBar.items count]) {
-            self.tabBar.selectedItem = [self.tabBar.items objectAtIndex:selectedIndex];
+        if (indexPath.row < [self.tabBar.items count]) {
+            self.tabBar.selectedItem = [self.tabBar tabBarItemAtIndexPath:indexPath];
         }
 
         //// Inform the delegate of the new selection
@@ -244,23 +325,7 @@ static CGPoint panningHorizontalPosition;
             [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
         }
     }
-    else if (selectedIndex == _selectedIndex && _selectedIndex < self.viewControllers.count)
-    {
-        UIViewController *selectedViewController = [self.viewControllers objectAtIndex:selectedIndex];
-        
-        if ([selectedViewController isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *nc = (UINavigationController *)selectedViewController;
-            if ([nc.viewControllers indexOfObject:nc.topViewController] != 0) {
-                [nc popToRootViewControllerAnimated:YES];
-            }
-        }
-        
-        [self contractMenu];
-        
-        if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:didSelectViewController:)]) {
-            [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
-        }
-    }
+    
     
     if (_startExpanded) {
         _startExpanded = NO;
@@ -318,26 +383,27 @@ static CGPoint panningHorizontalPosition;
 
 - (void)expandMenuWithDuration:(CGFloat)duration
 {
-    if (_selectedIndex < self.viewControllers.count)
-    {
-        _expanded = YES;
-        UIViewController *selectedViewController = [self.viewControllers objectAtIndex:_selectedIndex];
-        [self enableUserInteraction:NO];
-        
-        CGRect footerRect = _footerView.frame;
-        footerRect.size.width = _maximumWidth;
-        
-        [UIView animateWithDuration:duration
-                              delay:0
-                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
-                         animations:^{
-                             selectedViewController.view.frame = [self expandedRect];
-
-                             if (_statusBarBackground) [self updateStatusBar];
-                             if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
-                         }
-                         completion:NULL];
+    if (![self validIndexPath:_selectedIndexPath]) {
+        return;
     }
+    
+    _expanded = YES;
+    UIViewController *selectedViewController = [self viewControllerAtIndexPath:_selectedIndexPath];
+    [self enableUserInteraction:NO];
+    
+    CGRect footerRect = _footerView.frame;
+    footerRect.size.width = _maximumWidth;
+    
+    [UIView animateWithDuration:duration
+                          delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
+                     animations:^{
+                         selectedViewController.view.frame = [self expandedRect];
+                         
+                         if (_statusBarBackground) [self updateStatusBar];
+                         if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
+                     }
+                     completion:NULL];
 }
 
 - (void)contractMenu
@@ -351,29 +417,30 @@ static CGPoint panningHorizontalPosition;
 
 - (void)contractMenuWithDuration:(CGFloat)duration
 {
-    if (_selectedIndex < self.viewControllers.count)
-    {
-        _expanded = NO;
-        UIViewController *selectedViewController = [self.viewControllers objectAtIndex:_selectedIndex];
-        
-        CGRect footerRect = _footerView.frame;
-        footerRect.size.width = _minimumWidth;
-        
-        [UIView animateWithDuration:duration
-                              delay:0
-                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
-                         animations:^{
-                             selectedViewController.view.frame = [self contractedRect];
-                             
-                             if (_statusBarBackground) [self updateStatusBar];
-                             if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
-                         }
-                         completion:^(BOOL finished){
-                             
-                             [self enableUserInteraction:YES];
-                             _didSelect = NO;
-                         }];
+    if (![self validIndexPath:_selectedIndexPath]) {
+        return;
     }
+    
+    _expanded = NO;
+    UIViewController *selectedViewController = [self viewControllerAtIndexPath:_selectedIndexPath];
+    
+    CGRect footerRect = _footerView.frame;
+    footerRect.size.width = _minimumWidth;
+    
+    [UIView animateWithDuration:duration
+                          delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
+                     animations:^{
+                         selectedViewController.view.frame = [self contractedRect];
+                         
+                         if (_statusBarBackground) [self updateStatusBar];
+                         if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
+                     }
+                     completion:^(BOOL finished){
+                         
+                         [self enableUserInteraction:YES];
+                         _didSelect = NO;
+                     }];
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)panGesture
@@ -507,20 +574,22 @@ static CGPoint panningHorizontalPosition;
 {
     if (!_didSelect) {
         FUIVerticalTabBarButton *button = (FUIVerticalTabBarButton *)[tableView cellForRowAtIndexPath:indexPath];
-        if (button.isUnread) [button setUnread:NO];
         
-        [self setSelectedIndex:indexPath.row];
+        if (button.isUnread) [button setUnread:NO];
+        [self setSelectedIndexPath:indexPath];
     }
 }
  
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:shouldSelectViewController:)]) {
-        UIViewController *newController = [self.viewControllers objectAtIndex:indexPath.row];
+        
+        UIViewController *newController = [self viewControllerAtIndexPath:indexPath];
+        
         BOOL shouldSelect = [_delegate verticalTabBarController:self shouldSelectViewController:newController];
         if (shouldSelect) return indexPath;
     }
-    return tableView.indexPathForSelectedRow;
+    return _selectedIndexPath;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -581,26 +650,26 @@ static CGPoint panningHorizontalPosition;
 
 #pragma mark - NSKeyValueObserving (KVO) Methods
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    NSLog(@"%s",__FUNCTION__);
-
-    if ([object isKindOfClass:[UITabBarItem class]]) {
-        
-        NSLog(@"observeValueForKeyPath found UITabBarItem");
-        
-        NSInteger buttonIndex = [_tabBar.items indexOfObject:object];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:buttonIndex inSection:0];
-        [_tabBar updateContentAtIndexPath:indexPath];
-    }
-}
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//    NSLog(@"%s",__FUNCTION__);
+//
+//    if ([object isKindOfClass:[UITabBarItem class]]) {
+//        
+//        NSLog(@"observeValueForKeyPath found UITabBarItem");
+//        
+//        NSInteger buttonIndex = [_tabBar.items indexOfObject:object];
+//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:buttonIndex inSection:0];
+//        [_tabBar updateContentAtIndexPath:indexPath];
+//    }
+//}
 
 
 #pragma mark - View Auto-Rotation
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-    self.tabBar.selectedItem = [self.tabBar.items objectAtIndex:_selectedIndex];
+    self.tabBar.selectedItem = [self.tabBar tabBarItemAtIndexPath:_selectedIndexPath];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
