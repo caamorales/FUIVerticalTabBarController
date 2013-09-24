@@ -130,23 +130,6 @@ static CGPoint panningHorizontalPosition;
     return [self viewControllerAtIndexPath:self.selectedIndexPath];
 }
 
-//- (NSIndexPath *)indexPathOfObject:(id)anObject
-//{
-//    for (int i = 0; i < self.viewControllers.count; i++) {
-//        NSArray *controllers = [self.viewControllers objectAtIndex:i];
-//        
-//        for (int j = 0; j < controllers.count; j++) {
-//            id object = [controllers objectAtIndex:j];
-//            
-//            if ([anObject isEqual:object]) {
-//                return [NSIndexPath indexPathForRow:j inSection:i];
-//            }
-//        }
-//    }
-//    
-//    return nil;
-//}
-
 - (CGRect)expandedRect
 {
     return CGRectMake(_maximumWidth, 0, self.view.bounds.size.width-_minimumWidth, self.view.bounds.size.height);
@@ -205,7 +188,6 @@ static CGPoint panningHorizontalPosition;
 //                [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedSelectedImage"];
 //                [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedUnselectedImage"];
                 
-                
                 UIViewController *controller = nil;
                 if ([vc isKindOfClass:[UINavigationController class]]) controller = (UINavigationController *)vc;
                 else controller = vc;
@@ -220,14 +202,7 @@ static CGPoint panningHorizontalPosition;
                 panGesture.delegate = self;
                 [controller.view addGestureRecognizer:panGesture];
                 
-                if (_showSideShadow) {
-                    controller.view.layer.shadowColor = [UIColor blackColor].CGColor;
-                    controller.view.layer.shadowOffset = CGSizeMake(-2, 0);
-                    controller.view.layer.shadowRadius = 1.0;
-                    controller.view.layer.masksToBounds = NO;
-                    controller.view.layer.rasterizationScale = [UIScreen mainScreen].scale;
-                    controller.view.layer.shouldRasterize = YES;
-                }
+                if (_sideShadow) [self renderShadowForControllerView:controller.view];
             }
             
             [tabBarItems addObject:items];
@@ -243,14 +218,6 @@ static CGPoint panningHorizontalPosition;
 {
     [self setViewControllers:viewControllers];
 }
-
-//- (void)setSelectedViewController:(UIViewController *)selectedViewController
-//{
-//    NSIndexPath *indexPath = [self indexPathOfObject:selectedViewController];
-//    NSLog(@"********* %s indexPath : %@",__FUNCTION__,indexPath);
-//    
-//    self.selectedIndexPath = indexPath;
-//}
 
 - (void)setSelectedIndexPath:(NSIndexPath *)indexPath
 {
@@ -325,7 +292,6 @@ static CGPoint panningHorizontalPosition;
             [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
         }
     }
-    
     
     if (_startExpanded) {
         _startExpanded = NO;
@@ -543,8 +509,10 @@ static CGPoint panningHorizontalPosition;
 
 - (void)updateStatusBarStyle:(UIStatusBarStyle)style
 {
-    [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
-    [self setNeedsStatusBarAppearanceUpdate];
+    if ([UIApplication sharedApplication].statusBarStyle != style) {
+        [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
 }
 
 - (void)reset
@@ -663,6 +631,24 @@ static CGPoint panningHorizontalPosition;
 //        [_tabBar updateContentAtIndexPath:indexPath];
 //    }
 //}
+
+
+#pragma mark - Utility Methods
+
+- (void)renderShadowForControllerView:(UIView *)view
+{
+    struct CGColor *colorRef = [_sideShadow.shadowColor CGColor];
+    const CGFloat *components = CGColorGetComponents(colorRef);
+    
+    view.layer.shadowColor = [[UIColor colorWithRed:components[0]/255.0 green:components[1]/255.0 blue:components[2]/255.0 alpha:1.0] CGColor];
+    view.layer.shadowOffset = _sideShadow.shadowOffset;
+    view.layer.shadowRadius = _sideShadow.shadowBlurRadius;
+    view.layer.shadowOpacity = CGColorGetAlpha(colorRef);
+    view.layer.masksToBounds = NO;
+    
+    view.layer.shouldRasterize = YES;
+    view.layer.rasterizationScale = [UIScreen mainScreen].scale;
+}
 
 
 #pragma mark - View Auto-Rotation

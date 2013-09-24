@@ -53,8 +53,7 @@
 /** */
 @property (nonatomic, strong) UIColor *statusBarColor;
 /** */
-@property (nonatomic, getter = isShowingSideShadow) BOOL showSideShadow;
-
+@property (nonatomic, strong) NSShadow *sideShadow;
 
 /**
  * Replaces the view controllers currently managed by the navigation controller with the specified items.
