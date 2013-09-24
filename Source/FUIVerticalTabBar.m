@@ -182,17 +182,11 @@
 #endif
     
     button.textLabel.text = item.title;
-    button.contentView.tag = indexPath.row;
-    button.tag = indexPath.row;
+//    button.contentView.tag = indexPath.row;
+//    button.tag = indexPath.section;
 
     [button setUnread:([FUIVerticalTabBarButton badgeCountForValue:item.badgeValue] > 0) ? YES : NO];
     [button setBadgeValue:item.badgeValue];
-}
-
-- (void)updateContentAtIndexPath:(NSIndexPath *)indexPath
-{
-    FUIVerticalTabBarButton *button = (FUIVerticalTabBarButton *)[self cellForRowAtIndexPath:indexPath];
-    [self configureTarBarButton:button atIndexPath:indexPath];
 }
 
 
@@ -204,7 +198,14 @@
 //    
 //    UITouch *touch = [touches anyObject];
 //    if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
-//        [self.delegate tableView:self didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:touch.view.tag inSection:0]];
+//        
+//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:touch.view.tag inSection:touch.view.superview.tag];
+//        NSLog(@"indexPath : %@",indexPath);
+//        
+//        NSLog(@"touch.view : %@",touch.view);
+//        NSLog(@"touch.view.superview : %@",touch.view.superview);
+//        
+//        [self.delegate tableView:self didSelectRowAtIndexPath:indexPath];
 //    }
 //}
 

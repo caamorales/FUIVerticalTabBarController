@@ -41,15 +41,9 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 /** The tab badge's text font. */
 @property (nonatomic, strong) UIFont *badgeTextFont;
 
-
-- (UITabBarItem *)tabBarItemAtIndexPath:(NSIndexPath *)indexPath;
-
-
-/** 
- * Updates the content of a particular button from an index.
- * 
- * @param indexPath The index path of the button.
+/**
+ *
  */
-- (void)updateContentAtIndexPath:(NSIndexPath *)indexPath;
+- (UITabBarItem *)tabBarItemAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

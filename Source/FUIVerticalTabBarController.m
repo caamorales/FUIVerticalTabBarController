@@ -11,6 +11,7 @@
 #import "FUIVerticalTabBarButton.h"
 
 static CGPoint panningHorizontalPosition;
+static NSMutableArray *_tabBarItemToObserve;
 
 @interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate>
 @property (nonatomic, strong) UIView *statusBarBackground;
@@ -160,6 +161,17 @@ static CGPoint panningHorizontalPosition;
     return (indexPath && _selectedIndexPath.section == indexPath.section && _selectedIndexPath.row == indexPath.row) ? YES : NO;
 }
 
+- (NSArray *)tabBarItemKeyPathsToObserve
+{
+    if (!_tabBarItemToObserve) {
+        _tabBarItemToObserve = [NSMutableArray arrayWithObject:@"badgeValue"];
+        
+        if (IOS_NEWER_OR_EQUAL_TO_7) [_tabBarItemToObserve addObjectsFromArray:@[@"image", @"selectedImage"]];
+        else [_tabBarItemToObserve addObjectsFromArray:@[@"finishedUnselectedImage", @"finishedSelectedImage"]];
+    }
+    return _tabBarItemToObserve;
+}
+
 
 #pragma mark - Setter methods
 
@@ -180,13 +192,10 @@ static CGPoint panningHorizontalPosition;
                 UITabBarItem *tabBarItem = vc.tabBarItem;
                 [items addObject:tabBarItem];
                 
-//                [tabBarItem addObserver:self forKeyPath:@"badgeValue" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:nil];
-//                [tabBarItem addObserver:self forKeyPath:@"finishedSelectedImage" options:NSKeyValueObservingOptionInitial context:nil];
-//                [tabBarItem addObserver:self forKeyPath:@"finishedUnselectedImage" options:NSKeyValueObservingOptionInitial context:nil];
-//                
-//                [UITabBarItem automaticallyNotifiesObserversForKey:@"badgeValue"];
-//                [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedSelectedImage"];
-//                [UITabBarItem automaticallyNotifiesObserversForKey:@"finishedUnselectedImage"];
+                for (NSString *keyPath in self.tabBarItemKeyPathsToObserve) {
+                    [tabBarItem addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+                    [UITabBarItem automaticallyNotifiesObserversForKey:keyPath];
+                }
                 
                 UIViewController *controller = nil;
                 if ([vc isKindOfClass:[UINavigationController class]]) controller = (UINavigationController *)vc;
@@ -618,32 +627,26 @@ static CGPoint panningHorizontalPosition;
 
 #pragma mark - NSKeyValueObserving (KVO) Methods
 
-//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-//{
-//    NSLog(@"%s",__FUNCTION__);
-//
-//    if ([object isKindOfClass:[UITabBarItem class]]) {
-//        
-//        NSLog(@"observeValueForKeyPath found UITabBarItem");
-//        
-//        NSInteger buttonIndex = [_tabBar.items indexOfObject:object];
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:buttonIndex inSection:0];
-//        [_tabBar updateContentAtIndexPath:indexPath];
-//    }
-//}
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([object isKindOfClass:[UITabBarItem class]]) {
+        [_tabBar reloadData];
+        [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
+}
 
 
 #pragma mark - Utility Methods
 
 - (void)renderShadowForControllerView:(UIView *)view
 {
-    struct CGColor *colorRef = [_sideShadow.shadowColor CGColor];
-    const CGFloat *components = CGColorGetComponents(colorRef);
+    UIColor *color = [_sideShadow.shadowColor colorWithAlphaComponent:1.0];
+    CGFloat opacity = CGColorGetAlpha([_sideShadow.shadowColor CGColor]);
     
-    view.layer.shadowColor = [[UIColor colorWithRed:components[0]/255.0 green:components[1]/255.0 blue:components[2]/255.0 alpha:1.0] CGColor];
+    view.layer.shadowColor = [color CGColor];
     view.layer.shadowOffset = _sideShadow.shadowOffset;
     view.layer.shadowRadius = _sideShadow.shadowBlurRadius;
-    view.layer.shadowOpacity = CGColorGetAlpha(colorRef);
+    view.layer.shadowOpacity = opacity;
     view.layer.masksToBounds = NO;
     
     view.layer.shouldRasterize = YES;
