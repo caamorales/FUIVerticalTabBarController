@@ -645,9 +645,12 @@ static NSMutableArray *_tabBarItemToObserve;
     
     view.layer.shadowColor = [color CGColor];
     view.layer.shadowOffset = _sideShadow.shadowOffset;
-    view.layer.shadowRadius = _sideShadow.shadowBlurRadius;
+    view.layer.shadowRadius = _sideShadow.shadowBlurRadius*2;
     view.layer.shadowOpacity = opacity;
     view.layer.masksToBounds = NO;
+    
+    CGPathRef path = [[UIBezierPath bezierPathWithRect:view.frame] CGPath];
+    view.layer.shadowPath = path;
     
     view.layer.shouldRasterize = YES;
     view.layer.rasterizationScale = [UIScreen mainScreen].scale;
