@@ -99,6 +99,12 @@ static NSMutableArray *_tabBarItemToObserve;
             
             [self.view insertSubview:_footerView aboveSubview:_tabBar];
         }
+        
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        panGesture.maximumNumberOfTouches = 1;
+        panGesture.minimumNumberOfTouches = 1;
+        panGesture.delegate = self;
+        [_tabBar addGestureRecognizer:panGesture];
     }
     return _tabBar;
 }
@@ -420,14 +426,16 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)handlePan:(UIPanGestureRecognizer *)panGesture
 {
-    if (![self.delegate verticalTabBarControllerCanMoveHorizontally:self]) {
+    if (![self.delegate verticalTabBarControllerCanMoveHorizontally:self] ||
+        (![self.delegate verticalTabBarControllerShouldMoveHorizontallyEverywhere:self] && [panGesture.view isEqual:_tabBar])) {
         return;
     }
     
+    UIView *targetView = ([panGesture.view isEqual:_tabBar]) ? self.selectedViewController.view : panGesture.view;
     CGPoint newPoint = [panGesture translationInView:self.view];
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
-        panningHorizontalPosition = panGesture.view.frame.origin;
+        panningHorizontalPosition = targetView.frame.origin;
     }
     
     newPoint = CGPointMake(panningHorizontalPosition.x + newPoint.x, 0);
@@ -438,12 +446,16 @@ static NSMutableArray *_tabBarItemToObserve;
     {
         if (newPoint.x >= _minimumWidth && newPoint.x <= _maximumWidth)
         {
-            CGRect frame = panGesture.view.frame;
+            CGRect frame = targetView.frame;
             frame.origin = newPoint;
-            [panGesture.view setFrame:frame];
+            [targetView setFrame:frame];
             
             if (_footerView && _adjustFooterViewWhenPanning) [self adjustFooterViewWidth:newPoint.x];
             if (_statusBarBackground) [self adjustStatusBarAlpha:newPoint.x];
+        }
+        
+        if ([self.delegate verticalTabBarControllerShouldMoveHorizontallyEverywhere:self] && _tabBar.scrollEnabled) {
+            _tabBar.scrollEnabled = NO;
         }
     }
     else if (panGesture.state == UIGestureRecognizerStateEnded)
@@ -464,6 +476,10 @@ static NSMutableArray *_tabBarItemToObserve;
                 if (velocityX > 0) [self expandMenuWithDuration:duration];
                 else [self contractMenuWithDuration:duration];
             }
+        }
+        
+        if (_tabBar.scrollMode != FUIVerticalTabBarScrollNever) {
+            _tabBar.scrollEnabled = YES;
         }
     }
 }

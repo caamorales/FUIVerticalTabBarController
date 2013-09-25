@@ -76,7 +76,7 @@
 @end
 
 @protocol FUIVerticalTabBarControllerDelegate <NSObject>
-@optional
+@required
 
 /**
  * Tells the delegate when the user did select a TabBar item.
@@ -95,22 +95,42 @@
 */
 - (BOOL)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController;
 
-/**  */
+/**
+ *
+ */
 - (BOOL)verticalTabBarControllerCanMoveHorizontally:(FUIVerticalTabBarController *)tabBarController;
 
-/**  */
+/**
+ *
+ */
+- (BOOL)verticalTabBarControllerShouldMoveHorizontallyEverywhere:(FUIVerticalTabBarController *)tabBarController;
+
+/**
+ *
+ */
 - (BOOL)verticalTabBarControllerContractAfterTap:(FUIVerticalTabBarController *)tabBarController;
 
-/**  */
+/**
+ *
+ */
 - (BOOL)verticalTabBarControllerContractWhenSelecting:(FUIVerticalTabBarController *)tabBarController;
 
-/**  */
+
+@optional
+
+/**
+ *
+ */
 - (void)verticalTabBarControllerWillContract:(FUIVerticalTabBarController *)tabBarController;
 
-/**  */
+/**
+ *
+ */
 - (void)verticalTabBarControllerWillExpand:(FUIVerticalTabBarController *)tabBarController;
 
-/**  */
+/**
+ *
+ */
 - (void)verticalTabBarControllerDidReset:(FUIVerticalTabBarController *)tabBarController;
 
 @end
