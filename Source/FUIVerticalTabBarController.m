@@ -13,7 +13,9 @@
 static CGPoint panningHorizontalPosition;
 static NSMutableArray *_tabBarItemToObserve;
 
-@interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate>
+@interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate> {
+    UIStatusBarStyle _originalStatusBarStyle;
+}
 @property (nonatomic, strong) UIView *statusBarBackground;
 @property (nonatomic) BOOL didSelect;
 @end
@@ -118,6 +120,8 @@ static NSMutableArray *_tabBarItemToObserve;
         _statusBarBackground.backgroundColor = _statusBarColor;
         
         _statusBarBackground.alpha = _startExpanded ? 1.0 : 0.0;
+        
+        _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
     }
     return _statusBarBackground;
 }
@@ -183,7 +187,11 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)setViewControllers:(NSArray *)viewControllers
 {
-    _viewControllers = viewControllers;
+    id object = [_viewControllers lastObject];
+    if (![object isKindOfClass:[NSArray class]] || ![object isKindOfClass:[NSMutableArray class]]) {
+        _viewControllers =  @[viewControllers];
+    }
+    else _viewControllers = viewControllers;
     
     //// Creates the tab bar items
     if (self.tabBar) {
@@ -414,8 +422,8 @@ static NSMutableArray *_tabBarItemToObserve;
                      animations:^{
                          selectedViewController.view.frame = [self contractedRect];
                          
-                         if (_statusBarBackground) [self updateStatusBar];
                          if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
+                         if (IOS_NEWER_OR_EQUAL_TO_7 && _statusBarBackground) [self updateStatusBar];
                      }
                      completion:^(BOOL finished){
                          
@@ -436,6 +444,7 @@ static NSMutableArray *_tabBarItemToObserve;
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
         panningHorizontalPosition = targetView.frame.origin;
+        _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
     }
     
     newPoint = CGPointMake(panningHorizontalPosition.x + newPoint.x, 0);
@@ -451,7 +460,7 @@ static NSMutableArray *_tabBarItemToObserve;
             [targetView setFrame:frame];
             
             if (_footerView && _adjustFooterViewWhenPanning) [self adjustFooterViewWidth:newPoint.x];
-            if (_statusBarBackground) [self adjustStatusBarAlpha:newPoint.x];
+            if (IOS_NEWER_OR_EQUAL_TO_7 && _statusBarBackground) [self adjustStatusBarAlpha:newPoint.x];
         }
         
         if ([self.delegate verticalTabBarControllerShouldMoveHorizontallyEverywhere:self] && _tabBar.scrollEnabled) {
@@ -495,11 +504,9 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)adjustFooterViewWidth:(CGFloat)xPos
 {
-    CGFloat width = (xPos > _maximumWidth) ? _maximumWidth : _minimumWidth;
-    
     CGRect footerRect = _footerView.frame;
-    footerRect.size.width = width;
-    
+    footerRect.size.width = xPos;
+        
     [UIView animateWithDuration:0.01 delay:0
                         options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
                      animations:^{_footerView.frame = footerRect;} completion:NULL];
@@ -512,11 +519,13 @@ static NSMutableArray *_tabBarItemToObserve;
         CGFloat alpha = (_minimumWidth-xPos)/menuWidth;
         
         if (alpha < 0) alpha *= -1;
-        
-        UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+
+#ifndef IOS_NEWER_OR_EQUAL_TO_7
+        UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : _originalStatusBarStyle;
         if ([UIApplication sharedApplication].statusBarStyle != style) {
             [self updateStatusBarStyle:style];
         }
+#endif
         
         [UIView animateWithDuration:0.01 delay:0
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
@@ -526,18 +535,22 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBar
 {
+#ifndef IOS_NEWER_OR_EQUAL_TO_7
     _statusBarBackground.alpha = _expanded ? 1.0 : 0.0;
     
-    UIStatusBarStyle style = _expanded ?  UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+    UIStatusBarStyle style = _expanded ?  UIStatusBarStyleLightContent : _originalStatusBarStyle;
     [self updateStatusBarStyle:style];
+#endif
 }
 
 - (void)updateStatusBarStyle:(UIStatusBarStyle)style
 {
+#ifndef IOS_NEWER_OR_EQUAL_TO_7
     if ([UIApplication sharedApplication].statusBarStyle != style) {
         [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
         [self setNeedsStatusBarAppearanceUpdate];
     }
+#endif
 }
 
 - (void)reset

@@ -61,9 +61,18 @@
     
     _badgeView.titleLabel.font = _badgeTextFont;
     
-    CGSize size = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
-    size.width += kVerticalTabBarButtonMargin*2;
-    _badgeView.frame = CGRectMake(0, 0, roundf(size.width), kVerticalTabBarButtonHeight);
+    CGSize badgeSize;
+    
+#ifndef IOS_NEWER_OR_EQUAL_TO_7
+    NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeView.titleLabel.font forKey:NSFontAttributeName];
+    CGRect boundingRect = [_badgeValue boundingRectWithSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:stringAttributes context:nil];
+    badgeSize = boundingRect.size;
+#else
+    badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
+#endif
+    
+    badgeSize.width += kVerticalTabBarButtonMargin*2;
+    _badgeView.frame = CGRectMake(0, 0, roundf(badgeSize.width), kVerticalTabBarButtonHeight);
     
     return _badgeView;
 }
@@ -73,7 +82,7 @@
     if (!_readingIndicatorView)
     {
         _readingIndicatorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 4.0, _height)];
-        _readingIndicatorView.backgroundColor = self.foregroundColor;
+        _readingIndicatorView.backgroundColor = self.selectedBackgroundView.backgroundColor;
         _readingIndicatorView.userInteractionEnabled = NO;
     }
     return _readingIndicatorView;

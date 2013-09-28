@@ -17,8 +17,6 @@
 */
 @interface FUIVerticalTabBarButton : UITableViewCell
 
-/** The  */
-@property (nonatomic, strong) UIColor *foregroundColor;
 /** The badge's count value string. */
 @property (nonatomic, strong) NSString *badgeValue;
 /** The badge's text color for normal state. */

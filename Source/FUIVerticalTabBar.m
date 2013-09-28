@@ -53,7 +53,6 @@
     FUIVerticalTabBarButton *button = [[FUIVerticalTabBarButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FUIVerticalTabBarIdentifier];
     
     button.height = [self.delegate tableView:self heightForRowAtIndexPath:indexPath];
-    button.foregroundColor = _selectedTabColor;
     button.backgroundColor = self.backgroundColor;
     button.selectedBackgroundView.backgroundColor = _selectedTabColor;
     button.backgroundView.backgroundColor = _unselectedTabColor;
@@ -172,8 +171,8 @@
 - (void)configureTarBarButton:(FUIVerticalTabBarButton *)button atIndexPath:(NSIndexPath *)indexPath
 {
     UITabBarItem *item = [self tabBarItemAtIndexPath:indexPath];
-    
-#ifdef IOS_NEWER_OR_EQUAL_TO_7
+   
+#ifndef IOS_NEWER_OR_EQUAL_TO_7
     button.imageView.highlightedImage = item.selectedImage;
     button.imageView.image = item.image;
 #else
