@@ -187,15 +187,18 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)setViewControllers:(NSArray *)viewControllers
 {
-    id object = [_viewControllers lastObject];
-    if (![object isKindOfClass:[NSArray class]] || ![object isKindOfClass:[NSMutableArray class]]) {
+    if (_viewControllers) {
+        return;
+    }
+    
+    if (![[viewControllers lastObject] isKindOfClass:[NSArray class]]) {
         _viewControllers =  @[viewControllers];
     }
     else _viewControllers = viewControllers;
     
     //// Creates the tab bar items
     if (self.tabBar) {
-        NSMutableArray *tabBarItems = [NSMutableArray arrayWithCapacity:[_viewControllers count]];
+        NSMutableArray *tabBarItems = [NSMutableArray arrayWithCapacity:_viewControllers.count];
         
         for (NSArray *controllers in _viewControllers) {
             
@@ -298,6 +301,12 @@ static NSMutableArray *_tabBarItemToObserve;
         
         //// Remove the previously selected view controller (if any)
         UIViewController *previousViewController = [self viewControllerAtIndexPath:_selectedIndexPath];
+        
+        //// Inform the delegate of the upcoming new selection
+        if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:willDeselectViewController:)]) {
+            [_delegate verticalTabBarController:self willDeselectViewController:previousViewController];
+        }
+        
         [previousViewController.view removeFromSuperview];
         [previousViewController removeFromParentViewController];
         
@@ -453,8 +462,7 @@ static NSMutableArray *_tabBarItemToObserve;
     
     if (panGesture.state == UIGestureRecognizerStateChanged)
     {
-        if (newPoint.x >= _minimumWidth && newPoint.x <= _maximumWidth)
-        {
+        if (newPoint.x >= _minimumWidth && newPoint.x <= _maximumWidth) {
             CGRect frame = targetView.frame;
             frame.origin = newPoint;
             [targetView setFrame:frame];
@@ -520,7 +528,7 @@ static NSMutableArray *_tabBarItemToObserve;
         
         if (alpha < 0) alpha *= -1;
 
-#ifndef IOS_NEWER_OR_EQUAL_TO_7
+#ifdef IOS_NEWER_OR_EQUAL_TO_7
         UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : _originalStatusBarStyle;
         if ([UIApplication sharedApplication].statusBarStyle != style) {
             [self updateStatusBarStyle:style];
@@ -535,7 +543,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBar
 {
-#ifndef IOS_NEWER_OR_EQUAL_TO_7
+#ifdef IOS_NEWER_OR_EQUAL_TO_7
     _statusBarBackground.alpha = _expanded ? 1.0 : 0.0;
     
     UIStatusBarStyle style = _expanded ?  UIStatusBarStyleLightContent : _originalStatusBarStyle;
@@ -545,7 +553,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBarStyle:(UIStatusBarStyle)style
 {
-#ifndef IOS_NEWER_OR_EQUAL_TO_7
+#ifdef IOS_NEWER_OR_EQUAL_TO_7
     if ([UIApplication sharedApplication].statusBarStyle != style) {
         [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
         [self setNeedsStatusBarAppearanceUpdate];

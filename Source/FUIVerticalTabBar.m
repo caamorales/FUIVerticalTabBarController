@@ -172,7 +172,7 @@
 {
     UITabBarItem *item = [self tabBarItemAtIndexPath:indexPath];
    
-#ifndef IOS_NEWER_OR_EQUAL_TO_7
+#ifdef IOS_NEWER_OR_EQUAL_TO_7
     button.imageView.highlightedImage = item.selectedImage;
     button.imageView.image = item.image;
 #else

@@ -63,7 +63,7 @@
     
     CGSize badgeSize;
     
-#ifndef IOS_NEWER_OR_EQUAL_TO_7
+#ifdef IOS_NEWER_OR_EQUAL_TO_7
     NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeView.titleLabel.font forKey:NSFontAttributeName];
     CGRect boundingRect = [_badgeValue boundingRectWithSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:stringAttributes context:nil];
     badgeSize = boundingRect.size;

@@ -78,6 +78,8 @@
 @protocol FUIVerticalTabBarControllerDelegate <NSObject>
 @required
 
+- (void)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController willDeselectViewController:(UIViewController *)viewController;
+
 /**
  * Tells the delegate when the user did select a TabBar item.
  *
