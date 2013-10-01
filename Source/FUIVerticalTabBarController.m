@@ -26,11 +26,6 @@ static NSMutableArray *_tabBarItemToObserve;
 {
     if (self = [super init])
     {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            _startAnimated = NO;
-            _startExpanded = NO;
-        }
-        
         _selectedIndexPath = [NSIndexPath indexPathForRow:-1 inSection:-1];
     }
     return self;
@@ -43,7 +38,7 @@ static NSMutableArray *_tabBarItemToObserve;
 {
     [super viewDidLoad];
     
-    if (IOS_NEWER_OR_EQUAL_TO_7 && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (IOS_NEWER_OR_EQUAL_TO_7) {
         [self.view addSubview:self.statusBarBackground];
     }
 }
@@ -462,7 +457,6 @@ static NSMutableArray *_tabBarItemToObserve;
     
     if (panGesture.state == UIGestureRecognizerStateBegan) {
         panningHorizontalPosition = targetView.frame.origin;
-        _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
     }
     
     newPoint = CGPointMake(panningHorizontalPosition.x + newPoint.x, 0);
