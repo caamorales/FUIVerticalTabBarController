@@ -38,9 +38,9 @@ static NSMutableArray *_tabBarItemToObserve;
 {
     [super viewDidLoad];
     
-    if (IOS_NEWER_OR_EQUAL_TO_7) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
         [self.view addSubview:self.statusBarBackground];
-    }
+#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -79,7 +79,7 @@ static NSMutableArray *_tabBarItemToObserve;
     if (!_tabBar)
     {
         _tabBar = [[FUIVerticalTabBar alloc] initWithFrame:CGRectMake(0, 0, _maximumWidth, self.view.bounds.size.height)];
-        _tabBar.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin;
+        _tabBar.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleRightMargin;
         _tabBar.delegate = self;
         _tabBar.canCancelContentTouches = YES;
         
@@ -98,8 +98,6 @@ static NSMutableArray *_tabBarItemToObserve;
         }
         
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-        panGesture.maximumNumberOfTouches = 1;
-        panGesture.minimumNumberOfTouches = 1;
         panGesture.delegate = self;
         [_tabBar addGestureRecognizer:panGesture];
     }
@@ -108,14 +106,14 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (UIView *)statusBarBackground
 {
-    if (!_statusBarBackground) {
+    if (!_statusBarBackground)
+    {
         _statusBarBackground = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].statusBarFrame];
         
         if (!_statusBarColor) _statusBarColor = [UIColor blackColor];
         _statusBarBackground.backgroundColor = _statusBarColor;
         
         _statusBarBackground.alpha = _startExpanded ? 1.0 : 0.0;
-        
         _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
     }
     return _statusBarBackground;
@@ -136,12 +134,12 @@ static NSMutableArray *_tabBarItemToObserve;
     return [self viewControllerAtIndexPath:self.selectedIndexPath];
 }
 
-- (CGRect)expandedRect
+- (CGRect)rectToExpand
 {
     return CGRectMake(_maximumWidth, 0, self.view.bounds.size.width-_minimumWidth, self.view.bounds.size.height);
 }
 
-- (CGRect)contractedRect
+- (CGRect)rectToContract
 {
     return CGRectMake(_minimumWidth, 0, self.view.bounds.size.width-_minimumWidth, self.view.bounds.size.height);
 }
@@ -171,8 +169,11 @@ static NSMutableArray *_tabBarItemToObserve;
     if (!_tabBarItemToObserve) {
         _tabBarItemToObserve = [NSMutableArray arrayWithObject:@"badgeValue"];
         
-        if (IOS_NEWER_OR_EQUAL_TO_7) [_tabBarItemToObserve addObjectsFromArray:@[@"image", @"selectedImage"]];
-        else [_tabBarItemToObserve addObjectsFromArray:@[@"finishedUnselectedImage", @"finishedSelectedImage"]];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_6_1
+        [_tabBarItemToObserve addObjectsFromArray:@[@"finishedUnselectedImage", @"finishedSelectedImage"]];
+#else
+        [_tabBarItemToObserve addObjectsFromArray:@[@"image", @"selectedImage"]];
+#endif
     }
     return _tabBarItemToObserve;
 }
@@ -243,6 +244,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)setSelectedIndexPath:(NSIndexPath *)indexPath
 {
+    // Checks if the index path is valid.
     if (![self validIndexPath:indexPath]) {
         return;
     }
@@ -265,18 +267,18 @@ static NSMutableArray *_tabBarItemToObserve;
     }
     else if (indexPath.section < [self.viewControllers count])
     {
-        //// Add the new view controller to hierarchy
+        // Adds the new view controller to hierarchy
         UIViewController *selectedViewController = [self viewControllerAtIndexPath:indexPath];
         [self addChildViewController:selectedViewController];
         
-        //// Set the expanded and contracted rectangle
+        // Sets the expanded or contracted rectangle
         CGRect rect = CGRectZero;
-        if (_startExpanded) rect = [self expandedRect];
-        else rect = _expanded ? [self expandedRect] : [self contractedRect];
+        if (_startExpanded) rect = [self rectToExpand];
+        else rect = _expanded ? [self rectToExpand] : [self rectToContract];
         
         if (_startAnimated) {
             _startAnimated = NO;
-            selectedViewController.view.frame = _startExpanded ? [self contractedRect] : [self expandedRect];
+            selectedViewController.view.frame = _startExpanded ? [self rectToContract] : [self rectToExpand];
             
             [UIView animateWithDuration:_startAnimated ? 0.3 : 0.0
                              animations:^{selectedViewController.view.frame = rect;}];
@@ -295,10 +297,10 @@ static NSMutableArray *_tabBarItemToObserve;
             [self performSelector:@selector(contractMenu) withObject:nil afterDelay:0.2];
         }
         
-        //// Remove the previously selected view controller (if any)
+        // Removes the previously selected view controller (if any)
         UIViewController *previousViewController = [self viewControllerAtIndexPath:_selectedIndexPath];
         
-        //// Inform the delegate of the upcoming new selection
+        // Informs the delegate of the upcoming selection
         if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:willDeselectViewController:)]) {
             [_delegate verticalTabBarController:self willDeselectViewController:previousViewController];
         }
@@ -306,21 +308,22 @@ static NSMutableArray *_tabBarItemToObserve;
         [previousViewController.view removeFromSuperview];
         [previousViewController removeFromParentViewController];
         
-        //// Set the new selected index
+        // Sets the new selected index
         _selectedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
-        [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
 
-        //// Update the tabBar's item
+        // Updates the tabBar's item
         if (indexPath.row < [self.tabBar.items count]) {
             self.tabBar.selectedItem = [self.tabBar tabBarItemAtIndexPath:indexPath];
         }
 
-        //// Inform the delegate of the new selection
+        // Informs the delegate of the new selection
         if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarController:didSelectViewController:)]) {
             [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
         }
     }
     
+    // Disables the 'start expanded' attribute.
     if (_startExpanded) {
         _startExpanded = NO;
         _expanded = YES;
@@ -400,7 +403,7 @@ static NSMutableArray *_tabBarItemToObserve;
                           delay:0
                         options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
                      animations:^{
-                         selectedViewController.view.frame = [self expandedRect];
+                         selectedViewController.view.frame = [self rectToExpand];
                          
                          if (_statusBarBackground) [self updateStatusBar];
                          if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
@@ -433,10 +436,10 @@ static NSMutableArray *_tabBarItemToObserve;
                           delay:0
                         options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews
                      animations:^{
-                         selectedViewController.view.frame = [self contractedRect];
+                         selectedViewController.view.frame = [self rectToContract];
                          
                          if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
-                         if (IOS_NEWER_OR_EQUAL_TO_7 && _statusBarBackground) [self updateStatusBar];
+                         if (_statusBarBackground) [self updateStatusBar];
                      }
                      completion:^(BOOL finished){
                          
@@ -471,7 +474,7 @@ static NSMutableArray *_tabBarItemToObserve;
             [targetView setFrame:frame];
             
             if (_footerView && _adjustFooterViewWhenPanning) [self adjustFooterViewWidth:newPoint.x];
-            if (IOS_NEWER_OR_EQUAL_TO_7 && _statusBarBackground) [self adjustStatusBarAlpha:newPoint.x];
+            if (_statusBarBackground) [self adjustStatusBarAlpha:newPoint.x];
         }
         
         if ([self.delegate verticalTabBarControllerShouldMoveHorizontallyEverywhere:self] && _tabBar.scrollEnabled) {
@@ -530,8 +533,8 @@ static NSMutableArray *_tabBarItemToObserve;
         CGFloat alpha = (_minimumWidth-xPos)/menuWidth;
         
         if (alpha < 0) alpha *= -1;
-
-#ifdef IOS_NEWER_OR_EQUAL_TO_7
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
         UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : _originalStatusBarStyle;
         if ([UIApplication sharedApplication].statusBarStyle != style) {
             [self updateStatusBarStyle:style];
@@ -546,7 +549,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBar
 {
-#ifdef IOS_NEWER_OR_EQUAL_TO_7
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
     _statusBarBackground.alpha = _expanded ? 1.0 : 0.0;
     
     UIStatusBarStyle style = _expanded ?  UIStatusBarStyleLightContent : _originalStatusBarStyle;
@@ -556,7 +559,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBarStyle:(UIStatusBarStyle)style
 {
-#ifdef IOS_NEWER_OR_EQUAL_TO_7
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
     if ([UIApplication sharedApplication].statusBarStyle != style) {
         [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
         [self setNeedsStatusBarAppearanceUpdate];
@@ -567,7 +570,7 @@ static NSMutableArray *_tabBarItemToObserve;
 - (void)updateViewDisplay
 {
     [_tabBar reloadData];
-    [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
 }
 
 - (void)reset
@@ -600,6 +603,7 @@ static NSMutableArray *_tabBarItemToObserve;
         
         if (button.isUnread) [button setUnread:NO];
         [self setSelectedIndexPath:indexPath];
+        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
 }
  

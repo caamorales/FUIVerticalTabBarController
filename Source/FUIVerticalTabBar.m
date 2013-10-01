@@ -171,13 +171,13 @@
 - (void)configureTarBarButton:(FUIVerticalTabBarButton *)button atIndexPath:(NSIndexPath *)indexPath
 {
     UITabBarItem *item = [self tabBarItemAtIndexPath:indexPath];
-   
-#ifdef IOS_NEWER_OR_EQUAL_TO_7
-    button.imageView.highlightedImage = item.selectedImage;
-    button.imageView.image = item.image;
-#else
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_6_1
     button.imageView.highlightedImage = item.finishedSelectedImage;
     button.imageView.image = item.finishedUnselectedImage;
+#else
+    button.imageView.highlightedImage = item.selectedImage;
+    button.imageView.image = item.image;
 #endif
     
     button.textLabel.text = item.title;

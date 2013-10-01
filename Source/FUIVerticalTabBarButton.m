@@ -28,10 +28,13 @@
         self.selectedBackgroundView = [UIView new];
         
         self.clipsToBounds = YES;
-        self.separatorInset = UIEdgeInsetsZero;
         self.selectionStyle = UITableViewCellSelectionStyleBlue;
 
         self.textLabel.backgroundColor = [UIColor clearColor];
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+        self.separator = UIEdgeInsetsZero;
+#endif
     }
     return self;
 }
@@ -60,18 +63,18 @@
         
         [_badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:4.0] forState:UIControlStateNormal];
         [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
-//        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateSelected];
+        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateSelected];
     }
     
     _badgeView.titleLabel.font = _badgeTextFont;
-    CGSize badgeSize;
+    CGSize badgeSize = CGSizeZero;
     
-#ifdef IOS_NEWER_OR_EQUAL_TO_7
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_6_1
+    badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
+#else
     NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeView.titleLabel.font forKey:NSFontAttributeName];
     CGRect boundingRect = [_badgeValue boundingRectWithSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:stringAttributes context:nil];
     badgeSize = boundingRect.size;
-#else
-    badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
 #endif
     
     badgeSize.width += kVerticalTabBarButtonMargin*2;
