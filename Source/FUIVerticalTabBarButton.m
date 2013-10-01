@@ -28,6 +28,7 @@
         self.selectedBackgroundView = [UIView new];
         
         self.clipsToBounds = YES;
+        self.separatorInset = UIEdgeInsetsZero;
         self.selectionStyle = UITableViewCellSelectionStyleBlue;
 
         self.textLabel.backgroundColor = [UIColor clearColor];
@@ -45,22 +46,24 @@
 
 - (UIButton *)badgeView
 {
-    _badgeView = [UIButton buttonWithType:UIButtonTypeCustom];
-    _badgeView.userInteractionEnabled = NO;
-    _badgeView.adjustsImageWhenHighlighted = YES;
-    
-    _badgeView.titleLabel.textAlignment = NSTextAlignmentCenter;
-    
-    [_badgeView setTitle:_badgeValue forState:UIControlStateNormal];
-    [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
-    [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
-    
-    [_badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:4.0] forState:UIControlStateNormal];
-    [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
-    [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateSelected];
+    if (!_badgeView)
+    {
+        _badgeView = [UIButton buttonWithType:UIButtonTypeCustom];
+        _badgeView.adjustsImageWhenHighlighted = YES;
+        _badgeView.userInteractionEnabled = NO;
+        
+        _badgeView.titleLabel.textAlignment = NSTextAlignmentCenter;
+        
+        [_badgeView setTitle:_badgeValue forState:UIControlStateNormal];
+        [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
+        [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
+        
+        [_badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:4.0] forState:UIControlStateNormal];
+        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
+//        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateSelected];
+    }
     
     _badgeView.titleLabel.font = _badgeTextFont;
-    
     CGSize badgeSize;
     
 #ifdef IOS_NEWER_OR_EQUAL_TO_7
@@ -102,22 +105,28 @@
 
 - (void)setBadgeValue:(NSString *)value
 {
-    _badgeValue = value;
-    
-    UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? self.badgeView : nil;
-    [self setAccessoryView:accessory];
+    if (_badgeValue != value) {
+        
+        _badgeValue = value;
+        
+        UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? self.badgeView : nil;
+        [self setAccessoryView:accessory];
+    }
 }
 
 - (void)setUnread:(BOOL)unread
 {
-    _unread = unread;
-    
-    if (_unread && !_readingIndicatorView) {
-        [self.contentView addSubview:self.readingIndicatorView];
-    }
-    else if (!_unread) {
-        [_readingIndicatorView removeFromSuperview];
-        [self setReadingIndicatorView:nil];
+    if (_unread != unread) {
+        
+        _unread = unread;
+        
+        if (_unread && !_readingIndicatorView) {
+            [self.contentView addSubview:self.readingIndicatorView];
+        }
+        else if (!_unread) {
+            [_readingIndicatorView removeFromSuperview];
+            [self setReadingIndicatorView:nil];
+        }
     }
 }
 
@@ -132,13 +141,13 @@
 - (void)setSelected:(BOOL)selected animate:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-//    [_badgeView setSelected:selected];
+    [_badgeView setSelected:selected];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
-//    [_badgeView setHighlighted:highlighted];
+    [_badgeView setHighlighted:highlighted];
 }
 
 @end

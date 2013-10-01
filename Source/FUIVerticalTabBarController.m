@@ -187,6 +187,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)setViewControllers:(NSArray *)viewControllers
 {
+    // Checks if the instance is already initialized.
     if (_viewControllers) {
         return;
     }
@@ -333,12 +334,20 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)setMinimumWidth:(CGFloat)width
 {
+    if (_minimumWidth == width) {
+        return;
+    }
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) _minimumWidth = 0;
     else _minimumWidth = width;
 }
 
 - (void)setMaximumWidth:(CGFloat)width
 {
+    if (_maximumWidth == width) {
+        return;
+    }
+    
     _maximumWidth = width;
 }
 
@@ -354,10 +363,10 @@ static NSMutableArray *_tabBarItemToObserve;
     else _startExpanded = expanded;
 }
 
-- (void)enableUserInteraction:(BOOL)enable
+- (void)setAllUserInteractionEnabled:(BOOL)enabled
 {
     for (UIView *subview in self.selectedViewController.view.subviews) {
-        subview.userInteractionEnabled = enable;
+        subview.userInteractionEnabled = enabled;
     }
 }
 
@@ -387,7 +396,7 @@ static NSMutableArray *_tabBarItemToObserve;
     
     _expanded = YES;
     UIViewController *selectedViewController = [self viewControllerAtIndexPath:_selectedIndexPath];
-    [self enableUserInteraction:NO];
+    [self setAllUserInteractionEnabled:NO];
     
     CGRect footerRect = _footerView.frame;
     footerRect.size.width = _maximumWidth;
@@ -436,7 +445,7 @@ static NSMutableArray *_tabBarItemToObserve;
                      }
                      completion:^(BOOL finished){
                          
-                         [self enableUserInteraction:YES];
+                         [self setAllUserInteractionEnabled:YES];
                          _didSelect = NO;
                      }];
 }
@@ -561,6 +570,12 @@ static NSMutableArray *_tabBarItemToObserve;
 #endif
 }
 
+- (void)updateViewDisplay
+{
+    [_tabBar reloadData];
+    [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+}
+
 - (void)reset
 {
     for (UIViewController *controller in self.childViewControllers) {
@@ -667,8 +682,7 @@ static NSMutableArray *_tabBarItemToObserve;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([object isKindOfClass:[UITabBarItem class]]) {
-        [_tabBar reloadData];
-        [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        [self updateViewDisplay];
     }
 }
 
@@ -703,12 +717,12 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskAll;
 }
 
 - (BOOL)shouldAutorotate
 {
-    return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? YES : NO;
+    return YES;
 }
 
 

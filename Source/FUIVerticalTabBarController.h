@@ -40,9 +40,9 @@
 @property (nonatomic, readwrite, assign) CGFloat separatorHeight;
 /** YES if the menu is expanded. */
 @property (nonatomic, getter = isExpanded) BOOL expanded;
-/** YES if the menu should start expanded. Default NO. */
+/** YES if the menu should start expanded. Default NO. On iPhone, this property does noting. */
 @property (nonatomic) BOOL startExpanded;
-/** YES if the menu should start expanding animated. Default NO. */
+/** YES if the menu should start expanding animated. Default NO. On iPhone, this property does noting. */
 @property (nonatomic) BOOL startAnimated;
 /** An additional header view for the section tabs. You might use this for placing a logo, a custom view or even a search bar. */
 @property (nonatomic, strong) UIView *headerView;
