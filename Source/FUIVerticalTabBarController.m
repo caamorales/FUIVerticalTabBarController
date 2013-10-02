@@ -38,9 +38,7 @@ static NSMutableArray *_tabBarItemToObserve;
 {
     [super viewDidLoad];
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
-        [self.view addSubview:self.statusBarBackground];
-#endif
+    [self.view addSubview:self.statusBarBackground];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -106,6 +104,10 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (UIView *)statusBarBackground
 {
+#ifdef IOS_OLDER_THAN_7
+    NSLog(@"%s not available under iOS7",__FUNCTION__);
+    return nil;
+#else
     if (!_statusBarBackground)
     {
         _statusBarBackground = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].statusBarFrame];
@@ -117,6 +119,7 @@ static NSMutableArray *_tabBarItemToObserve;
         _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
     }
     return _statusBarBackground;
+#endif
 }
 
 - (UIViewController *)viewControllerAtIndexPath:(NSIndexPath *)indexPath
@@ -169,7 +172,7 @@ static NSMutableArray *_tabBarItemToObserve;
     if (!_tabBarItemToObserve) {
         _tabBarItemToObserve = [NSMutableArray arrayWithObject:@"badgeValue"];
         
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_6_1
+#ifdef IOS_OLDER_THAN_7
         [_tabBarItemToObserve addObjectsFromArray:@[@"finishedUnselectedImage", @"finishedSelectedImage"]];
 #else
         [_tabBarItemToObserve addObjectsFromArray:@[@"image", @"selectedImage"]];
@@ -534,7 +537,9 @@ static NSMutableArray *_tabBarItemToObserve;
         
         if (alpha < 0) alpha *= -1;
         
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+#ifdef IOS_OLDER_THAN_7
+        NSLog(@"%s not available under iOS7",__FUNCTION__);
+#else
         UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : _originalStatusBarStyle;
         if ([UIApplication sharedApplication].statusBarStyle != style) {
             [self updateStatusBarStyle:style];
@@ -549,7 +554,9 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBar
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+#ifdef IOS_OLDER_THAN_7
+    NSLog(@"%s not available under iOS7",__FUNCTION__);
+#else
     _statusBarBackground.alpha = _expanded ? 1.0 : 0.0;
     
     UIStatusBarStyle style = _expanded ?  UIStatusBarStyleLightContent : _originalStatusBarStyle;
@@ -559,7 +566,9 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBarStyle:(UIStatusBarStyle)style
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+#ifdef IOS_OLDER_THAN_7
+    NSLog(@"%s not available under iOS7",__FUNCTION__);
+#else
     if ([UIApplication sharedApplication].statusBarStyle != style) {
         [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
         [self setNeedsStatusBarAppearanceUpdate];

@@ -31,10 +31,6 @@
         self.selectionStyle = UITableViewCellSelectionStyleBlue;
 
         self.textLabel.backgroundColor = [UIColor clearColor];
-        
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
-        self.separator = UIEdgeInsetsZero;
-#endif
     }
     return self;
 }
@@ -69,7 +65,7 @@
     _badgeView.titleLabel.font = _badgeTextFont;
     CGSize badgeSize = CGSizeZero;
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_6_1
+#ifdef IOS_OLDER_THAN_7
     badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
 #else
     NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeView.titleLabel.font forKey:NSFontAttributeName];
