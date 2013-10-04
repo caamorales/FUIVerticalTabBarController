@@ -38,7 +38,9 @@ static NSMutableArray *_tabBarItemToObserve;
 {
     [super viewDidLoad];
     
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
     [self.view addSubview:self.statusBarBackground];
+#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -104,10 +106,6 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (UIView *)statusBarBackground
 {
-#ifdef IOS_OLDER_THAN_7
-    NSLog(@"%s not available under iOS7",__FUNCTION__);
-    return nil;
-#else
     if (!_statusBarBackground)
     {
         _statusBarBackground = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].statusBarFrame];
@@ -119,7 +117,6 @@ static NSMutableArray *_tabBarItemToObserve;
         _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
     }
     return _statusBarBackground;
-#endif
 }
 
 - (UIViewController *)viewControllerAtIndexPath:(NSIndexPath *)indexPath
@@ -172,7 +169,7 @@ static NSMutableArray *_tabBarItemToObserve;
     if (!_tabBarItemToObserve) {
         _tabBarItemToObserve = [NSMutableArray arrayWithObject:@"badgeValue"];
         
-#ifdef IOS_OLDER_THAN_7
+#if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
         [_tabBarItemToObserve addObjectsFromArray:@[@"finishedUnselectedImage", @"finishedSelectedImage"]];
 #else
         [_tabBarItemToObserve addObjectsFromArray:@[@"image", @"selectedImage"]];
@@ -333,6 +330,26 @@ static NSMutableArray *_tabBarItemToObserve;
     }
 }
 
+//- (void)setExpanded:(BOOL)expanded
+//{
+////    if (_expanded == expanded) {
+////        return;
+////    }
+//    
+//    _expanded = expanded;
+//    
+//    if (_expanded) {
+//        if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidExpand:)]) {
+//            [_delegate verticalTabBarControllerDidExpand:self];
+//        }
+//    }
+//    else {
+//        if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidContract:)]) {
+//            [_delegate verticalTabBarControllerDidContract:self];
+//        }
+//    }
+//}
+
 - (void)setMinimumWidth:(CGFloat)width
 {
     if (_minimumWidth == width) {
@@ -411,7 +428,13 @@ static NSMutableArray *_tabBarItemToObserve;
                          if (_statusBarBackground) [self updateStatusBar];
                          if (_footerView && _adjustFooterViewWhenPanning) _footerView.frame = footerRect;
                      }
-                     completion:NULL];
+                     completion:^(BOOL finished){
+                         
+                         if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidExpand:)] &&
+                             selectedViewController.view.frame.origin.x == _maximumWidth) {
+                             [_delegate verticalTabBarControllerDidExpand:self];
+                         }
+                     }];
 }
 
 - (void)contractMenu
@@ -448,6 +471,11 @@ static NSMutableArray *_tabBarItemToObserve;
                          
                          [self setAllUserInteractionEnabled:YES];
                          _didSelect = NO;
+                         
+                         if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidContract:)] &&
+                             selectedViewController.view.frame.origin.x == _minimumWidth) {
+                             [_delegate verticalTabBarControllerDidContract:self];
+                         }
                      }];
 }
 
@@ -469,7 +497,23 @@ static NSMutableArray *_tabBarItemToObserve;
     if (newPoint.x < _minimumWidth) newPoint.x = _minimumWidth;
     else if (newPoint.x > _maximumWidth) newPoint.x = _maximumWidth;
     
-    if (panGesture.state == UIGestureRecognizerStateChanged)
+    
+    if (panGesture.state == UIGestureRecognizerStateBegan)
+    {
+        CGPoint velocity = [panGesture velocityInView:targetView];
+        
+        if (velocity.x > 0) {
+            if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerWillExpand:)]) {
+                [_delegate verticalTabBarControllerWillExpand:self];
+            }
+        }
+        else {
+            if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerWillContract:)]) {
+                [_delegate verticalTabBarControllerWillContract:self];
+            }
+        }
+    }
+    else if (panGesture.state == UIGestureRecognizerStateChanged)
     {
         if (newPoint.x >= _minimumWidth && newPoint.x <= _maximumWidth) {
             CGRect frame = targetView.frame;
@@ -537,26 +581,22 @@ static NSMutableArray *_tabBarItemToObserve;
         
         if (alpha < 0) alpha *= -1;
         
-#ifdef IOS_OLDER_THAN_7
-        NSLog(@"%s not available under iOS7",__FUNCTION__);
-#else
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
         UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : _originalStatusBarStyle;
         if ([UIApplication sharedApplication].statusBarStyle != style) {
             [self updateStatusBarStyle:style];
         }
-#endif
         
         [UIView animateWithDuration:0.01 delay:0
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
                          animations:^{_statusBarBackground.alpha = alpha;} completion:NULL];
+#endif
     }
 }
 
 - (void)updateStatusBar
 {
-#ifdef IOS_OLDER_THAN_7
-    NSLog(@"%s not available under iOS7",__FUNCTION__);
-#else
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
     _statusBarBackground.alpha = _expanded ? 1.0 : 0.0;
     
     UIStatusBarStyle style = _expanded ?  UIStatusBarStyleLightContent : _originalStatusBarStyle;
@@ -566,9 +606,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)updateStatusBarStyle:(UIStatusBarStyle)style
 {
-#ifdef IOS_OLDER_THAN_7
-    NSLog(@"%s not available under iOS7",__FUNCTION__);
-#else
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
     if ([UIApplication sharedApplication].statusBarStyle != style) {
         [[UIApplication sharedApplication] setStatusBarStyle:style animated:YES];
         [self setNeedsStatusBarAppearanceUpdate];

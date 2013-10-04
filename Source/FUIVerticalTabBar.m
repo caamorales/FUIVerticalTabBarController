@@ -172,7 +172,7 @@
 {
     UITabBarItem *item = [self tabBarItemAtIndexPath:indexPath];
     
-#ifdef IOS_OLDER_THAN_7
+#if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
     button.imageView.highlightedImage = item.finishedSelectedImage;
     button.imageView.image = item.finishedUnselectedImage;
 #else

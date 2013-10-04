@@ -128,7 +128,17 @@
 /**
  *
  */
+- (void)verticalTabBarControllerDidContract:(FUIVerticalTabBarController *)tabBarController;
+
+/**
+ *
+ */
 - (void)verticalTabBarControllerWillExpand:(FUIVerticalTabBarController *)tabBarController;
+
+/**
+ *
+ */
+- (void)verticalTabBarControllerDidExpand:(FUIVerticalTabBarController *)tabBarController;
 
 /**
  *

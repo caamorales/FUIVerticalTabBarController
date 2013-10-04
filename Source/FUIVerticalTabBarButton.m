@@ -65,7 +65,7 @@
     _badgeView.titleLabel.font = _badgeTextFont;
     CGSize badgeSize = CGSizeZero;
     
-#ifdef IOS_OLDER_THAN_7
+#if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
     badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
 #else
     NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeView.titleLabel.font forKey:NSFontAttributeName];
