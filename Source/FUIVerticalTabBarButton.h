@@ -7,13 +7,10 @@
 //  Licence: MIT-Licence
 //
 
-#import "FlatUIKit.h"
-
-#define IOS_OLDER_THAN_7 ([[[UIDevice currentDevice] systemVersion] floatValue] < 7.0 )
-#define IOS_NEWER_OR_EQUAL_TO_7 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0 )
+#import <FlatUIKit/FlatUIKit.h>
 
 /**
- * @brief A custom tableview cell used for simulating an UITabBarItem behaviour.
+ * A custom tableview cell used for simulating an UITabBarItem behaviour.
 */
 @interface FUIVerticalTabBarButton : UITableViewCell
 

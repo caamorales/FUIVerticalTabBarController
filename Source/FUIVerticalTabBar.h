@@ -7,14 +7,16 @@
 //  Licence: MIT-Licence
 //
 
-#import "FlatUIKit.h"
+#import <FlatUIKit/FlatUIKit.h>
 
-#define FUIVerticalTabBarIdentifier NSStringFromClass([FUIVerticalTabBarButton class])
-
-typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVerticalTabBarScrollNever} FUIVerticalTabBarScrollMode;
+typedef NS_ENUM (NSInteger, FUIVerticalTabBarScrollMode) {
+    FUIVerticalTabBarScrollAlways,
+    FUIVerticalTabBarScrollToFit,
+    FUIVerticalTabBarScrollNever
+};
 
 /**
- * @brief A tableview simulating a TabBar behaviour, in charge of the data source of the component. 
+ * A tableview simulating a TabBar behaviour, in charge of the data source of the component.
 */
 @interface FUIVerticalTabBar : UITableView <UITableViewDataSource>
 
@@ -42,7 +44,10 @@ typedef enum {FUIVerticalTabBarScrollAlways, FUIVerticalTabBarScrollToFit, FUIVe
 @property (nonatomic, strong) UIFont *badgeTextFont;
 
 /**
+ * Returns a UITabBar Item object at a precise index path.
  *
+ * @param indexPath The index path.
+ * @returns The new UITabBar Item object.
  */
 - (UITabBarItem *)tabBarItemAtIndexPath:(NSIndexPath *)indexPath;
 

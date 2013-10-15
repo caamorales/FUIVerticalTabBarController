@@ -10,6 +10,8 @@
 #import "FUIVerticalTabBar.h"
 #import "FUIVerticalTabBarButton.h"
 
+static NSString *FUIVerticalTabBarIdentifier = @"FUIVerticalTabBarIdentifier";
+
 @implementation FUIVerticalTabBar
 
 - (id)initWithFrame:(CGRect)frame
@@ -181,31 +183,9 @@
 #endif
     
     button.textLabel.text = item.title;
-//    button.contentView.tag = indexPath.row;
-//    button.tag = indexPath.section;
 
     [button setUnread:([FUIVerticalTabBarButton badgeCountForValue:item.badgeValue] > 0) ? YES : NO];
     [button setBadgeValue:item.badgeValue];
 }
-
-
-//#pragma mark - Responding to Touch Events
-//
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-//{
-//    [super touchesBegan:touches withEvent:event];
-//    
-//    UITouch *touch = [touches anyObject];
-//    if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
-//        
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:touch.view.tag inSection:touch.view.superview.tag];
-//        NSLog(@"indexPath : %@",indexPath);
-//        
-//        NSLog(@"touch.view : %@",touch.view);
-//        NSLog(@"touch.view.superview : %@",touch.view.superview);
-//        
-//        [self.delegate tableView:self didSelectRowAtIndexPath:indexPath];
-//    }
-//}
 
 @end

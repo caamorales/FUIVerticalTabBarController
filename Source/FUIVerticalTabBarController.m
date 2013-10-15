@@ -10,6 +10,8 @@
 #import "FUIVerticalTabBarController.h"
 #import "FUIVerticalTabBarButton.h"
 
+#define kAnimationStandardDuration 0.3
+
 static CGPoint panningHorizontalPosition;
 static NSMutableArray *_tabBarItemToObserve;
 
@@ -280,7 +282,7 @@ static NSMutableArray *_tabBarItemToObserve;
             _startAnimated = NO;
             selectedViewController.view.frame = _startExpanded ? [self rectToContract] : [self rectToExpand];
             
-            [UIView animateWithDuration:_startAnimated ? 0.3 : 0.0
+            [UIView animateWithDuration:_startAnimated ? kAnimationStandardDuration : 0.0
                              animations:^{selectedViewController.view.frame = rect;}];
         }
         else {
@@ -329,26 +331,6 @@ static NSMutableArray *_tabBarItemToObserve;
         _expanded = YES;
     }
 }
-
-//- (void)setExpanded:(BOOL)expanded
-//{
-////    if (_expanded == expanded) {
-////        return;
-////    }
-//    
-//    _expanded = expanded;
-//    
-//    if (_expanded) {
-//        if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidExpand:)]) {
-//            [_delegate verticalTabBarControllerDidExpand:self];
-//        }
-//    }
-//    else {
-//        if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidContract:)]) {
-//            [_delegate verticalTabBarControllerDidContract:self];
-//        }
-//    }
-//}
 
 - (void)setMinimumWidth:(CGFloat)width
 {
@@ -403,7 +385,7 @@ static NSMutableArray *_tabBarItemToObserve;
         [_delegate verticalTabBarControllerWillExpand:self];
     }
     
-    [self expandMenuWithDuration:0.3];
+    [self expandMenuWithDuration:kAnimationStandardDuration];
 }
 
 - (void)expandMenuWithDuration:(CGFloat)duration
@@ -443,7 +425,7 @@ static NSMutableArray *_tabBarItemToObserve;
         [_delegate verticalTabBarControllerWillContract:self];
     }
     
-    [self contractMenuWithDuration:0.3];
+    [self contractMenuWithDuration:kAnimationStandardDuration];
 }
 
 - (void)contractMenuWithDuration:(CGFloat)duration
@@ -481,8 +463,9 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)handlePan:(UIPanGestureRecognizer *)panGesture
 {
-    if (![self.delegate verticalTabBarControllerCanMoveHorizontally:self] ||
-        (![self.delegate verticalTabBarControllerShouldMoveHorizontallyEverywhere:self] && [panGesture.view isEqual:_tabBar])) {
+    NSLog(@"[self.delegate verticalTabBarControllerCanPanHorizontally:self] : %@", [self.delegate verticalTabBarControllerCanPanHorizontally:self] ? @"YES" : @"NO");
+    
+    if (![self.delegate verticalTabBarControllerCanPanHorizontally:self]) {
         return;
     }
     
@@ -524,9 +507,7 @@ static NSMutableArray *_tabBarItemToObserve;
             if (_statusBarBackground) [self adjustStatusBarAlpha:newPoint.x];
         }
         
-        if ([self.delegate verticalTabBarControllerShouldMoveHorizontallyEverywhere:self] && _tabBar.scrollEnabled) {
-            _tabBar.scrollEnabled = NO;
-        }
+        _tabBar.scrollEnabled = NO;
     }
     else if (panGesture.state == UIGestureRecognizerStateEnded)
     {
@@ -734,6 +715,11 @@ static NSMutableArray *_tabBarItemToObserve;
 
 #pragma mark - Utility Methods
 
+/**
+ * Renders an optimized shadow for the side of every view controller.
+ *
+ * @param view The view to apply the shadow settings.
+ */
 - (void)renderShadowForControllerView:(UIView *)view
 {
     UIColor *color = [_sideShadow.shadowColor colorWithAlphaComponent:1.0];
@@ -781,6 +767,15 @@ static NSMutableArray *_tabBarItemToObserve;
 - (void)viewDidUnload
 {
     [super viewDidUnload];
+}
+
+- (void)dealloc
+{
+    for (UITabBarItem *item in _tabBar.items) {
+        for (NSString *keyPath in _tabBarItemToObserve) {
+            [item removeObserver:self forKeyPath:keyPath];
+        }
+    }
 }
 
 @end

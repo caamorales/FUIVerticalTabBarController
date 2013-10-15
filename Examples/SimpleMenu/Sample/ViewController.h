@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 DZN Labs. All rights reserved.
 //
 
-#import "FlatUIKit.h"
+#import <UIKit/UIKit.h>
 
 @interface ViewController : UITableViewController
 

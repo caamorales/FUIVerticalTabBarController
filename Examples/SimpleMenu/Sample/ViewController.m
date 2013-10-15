@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "FUIVerticalTabBarButton.h"
-#import "UIColor+FlatUI.h"
 
 static NSString *CellIdentifier = @"Cell";
 
@@ -26,7 +25,13 @@ static NSString *CellIdentifier = @"Cell";
         UIImage *unselectedImage = [UIImage circularImageWithColor:[UIColor colorFromHexCode:@"c8d1de"] size:CGSizeMake(20.0, 20.0)];
         
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:self.title image:nil tag:1];
+        
+#if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
         [self.tabBarItem setFinishedSelectedImage:selectedImage withFinishedUnselectedImage:unselectedImage];
+#else
+        self.tabBarItem.image = unselectedImage;
+        self.tabBarItem.selectedImage = selectedImage;
+#endif
         
         NSInteger randomCount = random()%10;
         [self.tabBarItem setBadgeValue:[NSString stringWithFormat:@"%d", randomCount]];
@@ -43,7 +48,6 @@ static NSString *CellIdentifier = @"Cell";
 {
     [super viewDidLoad];
     
-    [self setWantsFullScreenLayout:YES];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 

@@ -35,11 +35,14 @@
         _verticalTabBarController.maximumWidth = [UIScreen mainScreen].bounds.size.width-54.0;
         _verticalTabBarController.startAnimated = YES;
         _verticalTabBarController.startExpanded = NO;
+        _verticalTabBarController.delegate = self;
         
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication sharedApplication].statusBarFrame.size.width, 64.0)];
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 20.0, _verticalTabBarController.maximumWidth, 44.0)];
         searchBar.barStyle = UISearchBarStyleMinimal;
-        searchBar.barTintColor = [UIColor clearColor];
+        if ([searchBar respondsToSelector:@selector(setBarTintColor:)]) {
+            searchBar.barTintColor = [UIColor clearColor];
+        }
         searchBar.placeholder = @"Search";
         [headerView addSubview:searchBar];
         _verticalTabBarController.headerView = headerView;
@@ -70,20 +73,49 @@
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
         [navigationcontrollers addObject:nc];
         
-        UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:_verticalTabBarController action:@selector(switchMenu:)];
+        UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] initWithImage:[self menuIcon] style:UIBarButtonItemStylePlain target:_verticalTabBarController action:@selector(switchMenu:)];
         [vc.navigationItem setLeftBarButtonItem:menuItem];
     }
     
     [_verticalTabBarController setViewControllers:navigationcontrollers];
-    _verticalTabBarController.selectedIndex = 0;
+    _verticalTabBarController.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+}
+
+- (UIImage *)menuIcon
+{
+    //Create a UIBezierPath for a Triangle
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(24.0, 24.0), NO, 0);
+    
+    //// Color Declarations
+    UIColor *fillColor = self.window.tintColor;
+    
+    //// Rectangles Drawing
+    for (int i = 0; i < 3; i++) {
+        CGFloat yPos = 5 + 6*i;
+        
+        UIBezierPath *rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(0, yPos, 24.0, 2.0)];
+        [fillColor setFill];
+        [rectanglePath fill];
+    }
+    
+    //Create a UIImage using the current context.
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
 }
 
 
 #pragma mark - FUIVerticalTabBarControllerDelegate Methods
 
+- (void)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController willDeselectViewController:(UIViewController *)viewController;
+{
+
+}
+
 - (void)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
-//    NSLog(@"%s",__FUNCTION__);
+
 }
 
 - (BOOL)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
@@ -96,7 +128,7 @@
     return YES;
 }
 
-- (BOOL)verticalTabBarControllerCanMoveHorizontally:(FUIVerticalTabBarController *)tabBarController
+- (BOOL)verticalTabBarControllerCanPanHorizontally:(FUIVerticalTabBarController *)tabBarController
 {
     return YES;
 }
