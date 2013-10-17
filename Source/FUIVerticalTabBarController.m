@@ -463,8 +463,6 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)handlePan:(UIPanGestureRecognizer *)panGesture
 {
-    NSLog(@"[self.delegate verticalTabBarControllerCanPanHorizontally:self] : %@", [self.delegate verticalTabBarControllerCanPanHorizontally:self] ? @"YES" : @"NO");
-    
     if (![self.delegate verticalTabBarControllerCanPanHorizontally:self]) {
         return;
     }

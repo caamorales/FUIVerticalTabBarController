@@ -9,7 +9,9 @@
 #import "AppDelegate.h"
 #import "ViewController.h"
 
-#import "UIColor+FlatUI.h"
+@interface AppDelegate ()
+@property (nonatomic, strong) UISearchBar *searchBar;
+@end
 
 @implementation AppDelegate
 
@@ -38,13 +40,13 @@
         _verticalTabBarController.delegate = self;
         
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication sharedApplication].statusBarFrame.size.width, 64.0)];
-        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 20.0, _verticalTabBarController.maximumWidth, 44.0)];
-        searchBar.barStyle = UISearchBarStyleMinimal;
-        if ([searchBar respondsToSelector:@selector(setBarTintColor:)]) {
-            searchBar.barTintColor = [UIColor clearColor];
+        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 20.0, _verticalTabBarController.maximumWidth, 44.0)];
+        _searchBar.barStyle = UISearchBarStyleMinimal;
+        if ([_searchBar respondsToSelector:@selector(setBarTintColor:)]) {
+            _searchBar.barTintColor = [UIColor clearColor];
         }
-        searchBar.placeholder = @"Search";
-        [headerView addSubview:searchBar];
+        _searchBar.placeholder = @"Search";
+        [headerView addSubview:_searchBar];
         _verticalTabBarController.headerView = headerView;
         
         _verticalTabBarController.tabBar.scrollMode = FUIVerticalTabBarScrollAlways;
@@ -83,26 +85,29 @@
 
 - (UIImage *)menuIcon
 {
-    //Create a UIBezierPath for a Triangle
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(24.0, 24.0), NO, 0);
-    
-    //// Color Declarations
-    UIColor *fillColor = self.window.tintColor;
-    
-    //// Rectangles Drawing
-    for (int i = 0; i < 3; i++) {
-        CGFloat yPos = 5 + 6*i;
+    static UIImage *_menuIcon = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         
-        UIBezierPath *rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(0, yPos, 24.0, 2.0)];
-        [fillColor setFill];
-        [rectanglePath fill];
-    }
-    
-    //Create a UIImage using the current context.
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(24.0, 24.0), NO, 0);
+        
+        //// Color Declarations
+        UIColor *fillColor = self.window.tintColor;
+        
+        //// Rectangles Drawing
+        for (int i = 0; i < 3; i++) {
+            CGFloat yPos = 5 + 6*i;
+            
+            UIBezierPath *rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(0, yPos, 24.0, 2.0)];
+            [fillColor setFill];
+            [rectanglePath fill];
+        }
+        
+        //Create a UIImage using the current context.
+        _menuIcon = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    });
+    return _menuIcon;
 }
 
 
@@ -110,12 +115,14 @@
 
 - (void)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController willDeselectViewController:(UIViewController *)viewController;
 {
-
+    
 }
 
 - (void)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
-
+    if ([_searchBar isFirstResponder]) {
+        [_searchBar resignFirstResponder];
+    }
 }
 
 - (BOOL)verticalTabBarController:(FUIVerticalTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
