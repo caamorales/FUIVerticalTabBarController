@@ -3,6 +3,7 @@ Pod::Spec.new do |s|
   s.name         = "FUIVerticalTabBarController"
   s.version      = "1.0"
   s.summary      = "An awesome flat vertical tab bar controller for iOS."
+    s.homepage     = "https://github.com/dzenbot/FUIVerticalTabBarController"
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.author       = { "Ignacio Romero Z." => "iromero@dzen.cl" }
   s.platform     = :ios, '6.0'
