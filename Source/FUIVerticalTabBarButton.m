@@ -35,12 +35,6 @@
     return self;
 }
 
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-}
-
-
 #pragma mark - Getter Methods
 
 - (UIButton *)badgeView
@@ -52,8 +46,6 @@
         _badgeView.userInteractionEnabled = NO;
         
         _badgeView.titleLabel.textAlignment = NSTextAlignmentCenter;
-        
-        [_badgeView setTitle:_badgeValue forState:UIControlStateNormal];
         [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
         [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
         
@@ -61,21 +53,6 @@
         [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
         [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateSelected];
     }
-    
-    _badgeView.titleLabel.font = _badgeTextFont;
-    CGSize badgeSize = CGSizeZero;
-    
-#if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
-    badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
-#else
-    NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeView.titleLabel.font forKey:NSFontAttributeName];
-    CGRect boundingRect = [_badgeValue boundingRectWithSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:stringAttributes context:nil];
-    badgeSize = boundingRect.size;
-#endif
-    
-    badgeSize.width += kVerticalTabBarButtonMargin*2;
-    _badgeView.frame = CGRectMake(0, 0, roundf(badgeSize.width), kVerticalTabBarButtonHeight);
-    
     return _badgeView;
 }
 
@@ -104,11 +81,13 @@
 
 - (void)setBadgeValue:(NSString *)value
 {
-    if (_badgeValue != value) {
+    if (value) {
         
         _badgeValue = value;
         
         UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? self.badgeView : nil;
+        [_badgeView setTitle:_badgeValue forState:UIControlStateNormal];
+
         [self setAccessoryView:accessory];
     }
 }
@@ -147,6 +126,30 @@
 {
     [super setHighlighted:highlighted animated:animated];
     [_badgeView setHighlighted:highlighted];
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    if (_badgeTextFont && _badgeValue) {
+        
+        self.badgeView.titleLabel.font = _badgeTextFont;
+        CGSize badgeSize = CGSizeZero;
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
+        badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
+#else
+        NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeTextFont forKey:NSFontAttributeName];
+        CGRect boundingRect = [_badgeValue boundingRectWithSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:stringAttributes context:nil];
+        badgeSize = boundingRect.size;
+#endif
+        
+        CGRect frame = _badgeView.frame;
+        badgeSize.width += kVerticalTabBarButtonMargin*2;
+        frame.size = CGSizeMake(roundf(badgeSize.width), kVerticalTabBarButtonHeight);
+        _badgeView.frame = frame;
+    }
 }
 
 @end

@@ -186,7 +186,8 @@ static NSMutableArray *_tabBarItemToObserve;
 - (void)setViewControllers:(NSArray *)viewControllers
 {
     // Checks if the instance is already initialized.
-    if (_viewControllers) {
+    if (_viewControllers || !viewControllers) {
+        if (!viewControllers) _viewControllers = nil;
         return;
     }
     
@@ -211,6 +212,8 @@ static NSMutableArray *_tabBarItemToObserve;
                 for (NSString *keyPath in self.tabBarItemKeyPathsToObserve) {
                     [tabBarItem addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
                     [UITabBarItem automaticallyNotifiesObserversForKey:keyPath];
+                    
+//                    [tabBarItem removeObserver:self forKeyPath:keyPath context:nil];
                 }
                 
                 UIViewController *controller = nil;
@@ -228,8 +231,9 @@ static NSMutableArray *_tabBarItemToObserve;
                 [controller.view addGestureRecognizer:panGesture];
                 
                 if (_sideShadow) [self renderShadowForControllerView:controller.view];
+                
+//                [self addChildViewController:controller];
             }
-            
             [tabBarItems addObject:items];
         }
 
@@ -267,11 +271,12 @@ static NSMutableArray *_tabBarItemToObserve;
             [_delegate verticalTabBarController:self didSelectViewController:selectedViewController];
         }
     }
-    else if (indexPath.section < [self.viewControllers count])
+    else if ([self viewControllerAtIndexPath:indexPath])
     {
         // Adds the new view controller to hierarchy
         UIViewController *selectedViewController = [self viewControllerAtIndexPath:indexPath];
-        [self addChildViewController:selectedViewController];
+//        [self addChildViewController:selectedViewController];
+//        [selectedViewController didMoveToParentViewController:self];
         
         // Sets the expanded or contracted rectangle
         CGRect rect = CGRectZero;
@@ -292,7 +297,6 @@ static NSMutableArray *_tabBarItemToObserve;
         selectedViewController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         if (_statusBarBackground) [self.view insertSubview:selectedViewController.view belowSubview:_statusBarBackground];
         else [self.view addSubview:selectedViewController.view];
-        
 
         if ([self.delegate verticalTabBarControllerContractWhenSelecting:self] && !_didSelect) {
             _didSelect = YES;
@@ -308,8 +312,8 @@ static NSMutableArray *_tabBarItemToObserve;
         }
         
         [previousViewController.view removeFromSuperview];
-        [previousViewController removeFromParentViewController];
-        
+//        [previousViewController removeFromParentViewController];
+
         // Sets the new selected index
         _selectedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
         [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
@@ -601,6 +605,8 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)reset
 {
+    _selectedIndexPath = [NSIndexPath indexPathForRow:-1 inSection:-1];
+    
     for (UIViewController *controller in self.childViewControllers) {
         [controller removeFromParentViewController];
         [controller.view removeFromSuperview];
@@ -746,7 +752,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskAll;
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 - (BOOL)shouldAutorotate
