@@ -10,12 +10,12 @@
 #import "FUIVerticalTabBarButton.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kVerticalTabBarButtonHeight 30.0
-#define kVerticalTabBarButtonMargin 11.0
+#define kVerticalTabBarButtonHeight 26.0
+#define kVerticalTabBarButtonMargin 9.0
 
 @interface FUIVerticalTabBarButton () 
 @property (nonatomic, strong) UIView *readingIndicatorView;
-@property (nonatomic, strong) UIButton *badgeView;
+@property (nonatomic, strong) UILabel *badgeLabel;
 @end
 
 @implementation FUIVerticalTabBarButton
@@ -37,25 +37,24 @@
 
 #pragma mark - Getter Methods
 
-- (UIButton *)badgeView
+- (UILabel *)badgeLabel
 {
-    if (!_badgeView)
+    if (!_badgeLabel)
     {
-        _badgeView = [UIButton buttonWithType:UIButtonTypeCustom];
-        _badgeView.adjustsImageWhenHighlighted = YES;
-        _badgeView.userInteractionEnabled = NO;
+        _badgeLabel = [UILabel new];
         
-        _badgeView.titleLabel.textAlignment = NSTextAlignmentCenter;
-        [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
-        [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
+        _badgeLabel.textAlignment = NSTextAlignmentCenter;
+        _badgeLabel.textColor = _badgeTextColor;
+        _badgeLabel.highlightedTextColor = self.textLabel.highlightedTextColor;
         
         CGFloat radius = kVerticalTabBarButtonHeight/2;
-        
-        [_badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:radius] forState:UIControlStateNormal];
-        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:radius] forState:UIControlStateHighlighted];
-        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:radius] forState:UIControlStateSelected];
+        _badgeLabel.layer.cornerRadius = radius;
+        _badgeLabel.layer.borderColor = _badgeTextColor.CGColor;
+        _badgeLabel.layer.borderWidth = 1.0;
+        _badgeLabel.layer.shouldRasterize = YES;
+        _badgeLabel.layer.rasterizationScale = [UIScreen mainScreen].scale;
     }
-    return _badgeView;
+    return _badgeLabel;
 }
 
 - (UIView *)readingIndicatorView
@@ -86,12 +85,12 @@
     _badgeValue = value;
     
     if (_badgeValue) {
-        UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? self.badgeView : nil;
-        [_badgeView setTitle:_badgeValue forState:UIControlStateNormal];
+        UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? self.badgeLabel : nil;
+        _badgeLabel.text = _badgeValue;
         [self setAccessoryView:accessory];
     }
     else {
-        [self setBadgeView:nil];
+        [self setBadgeLabel:nil];
         [self setUnread:NO];
         [self setAccessoryView:nil];
     }
@@ -124,13 +123,11 @@
 - (void)setSelected:(BOOL)selected animate:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-    [_badgeView setSelected:selected];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
-    [_badgeView setHighlighted:highlighted];
 }
 
 - (void)layoutSubviews
@@ -139,7 +136,7 @@
     
     if (_badgeTextFont && _badgeValue) {
         
-        self.badgeView.titleLabel.font = _badgeTextFont;
+        self.badgeLabel.font = _badgeTextFont;
         CGSize badgeSize = CGSizeZero;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
@@ -151,13 +148,16 @@
         badgeSize = CGSizeMake(roundf(boundingRect.size.width), roundf(boundingRect.size.height));
 #endif
         
+        CGRect frame = _badgeLabel.frame;
+        
         NSLog(@"badgeSize.width : %f", badgeSize.width);
         
-        CGRect frame = _badgeView.frame;
         badgeSize.width += kVerticalTabBarButtonMargin*2;
         frame.size = CGSizeMake(roundf(badgeSize.width), kVerticalTabBarButtonHeight);
-        _badgeView.frame = frame;
+        _badgeLabel.frame = frame;
     }
+    
+    _badgeLabel.layer.borderColor = self.selected ? self.textLabel.highlightedTextColor.CGColor : _badgeTextColor.CGColor;
 }
 
 @end
