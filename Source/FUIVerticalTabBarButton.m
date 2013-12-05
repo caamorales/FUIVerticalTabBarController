@@ -11,7 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define kVerticalTabBarButtonHeight 30.0
-#define kVerticalTabBarButtonMargin 8.0
+#define kVerticalTabBarButtonMargin 11.0
 
 @interface FUIVerticalTabBarButton () 
 @property (nonatomic, strong) UIView *readingIndicatorView;
@@ -49,9 +49,11 @@
         [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateNormal];
         [_badgeView setTitleColor:_badgeTextColor forState:UIControlStateHighlighted];
         
-        [_badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:4.0] forState:UIControlStateNormal];
-        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateHighlighted];
-        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:4.0] forState:UIControlStateSelected];
+        CGFloat radius = kVerticalTabBarButtonHeight/2;
+        
+        [_badgeView setBackgroundImage:[UIImage imageWithColor:_badgeColor cornerRadius:radius] forState:UIControlStateNormal];
+        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:radius] forState:UIControlStateHighlighted];
+        [_badgeView setBackgroundImage:[UIImage imageWithColor:self.backgroundView.backgroundColor cornerRadius:radius] forState:UIControlStateSelected];
     }
     return _badgeView;
 }
@@ -81,14 +83,17 @@
 
 - (void)setBadgeValue:(NSString *)value
 {
-    if (value) {
-        
-        _badgeValue = value;
-        
+    _badgeValue = value;
+    
+    if (_badgeValue) {
         UIView *accessory = ([FUIVerticalTabBarButton badgeCountForValue:value] > 0) ? self.badgeView : nil;
         [_badgeView setTitle:_badgeValue forState:UIControlStateNormal];
-
         [self setAccessoryView:accessory];
+    }
+    else {
+        [self setBadgeView:nil];
+        [self setUnread:NO];
+        [self setAccessoryView:nil];
     }
 }
 
@@ -138,12 +143,15 @@
         CGSize badgeSize = CGSizeZero;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
-        badgeSize = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
+        CGSize size = [_badgeValue sizeWithFont:_badgeView.titleLabel.font constrainedToSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight)];
+        badgeSize = CGSizeMake(roundf(size.width), roundf(size.height));
 #else
         NSDictionary *stringAttributes = [NSDictionary dictionaryWithObject:_badgeTextFont forKey:NSFontAttributeName];
         CGRect boundingRect = [_badgeValue boundingRectWithSize:CGSizeMake(100.0, kVerticalTabBarButtonHeight) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:stringAttributes context:nil];
-        badgeSize = boundingRect.size;
+        badgeSize = CGSizeMake(roundf(boundingRect.size.width), roundf(boundingRect.size.height));
 #endif
+        
+        NSLog(@"badgeSize.width : %f", badgeSize.width);
         
         CGRect frame = _badgeView.frame;
         badgeSize.width += kVerticalTabBarButtonMargin*2;

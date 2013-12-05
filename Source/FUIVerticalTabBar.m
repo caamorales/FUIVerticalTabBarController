@@ -184,8 +184,6 @@ static NSString *FUIVerticalTabBarIdentifier = @"FUIVerticalTabBarIdentifier";
     
     button.textLabel.text = item.title;
     
-    NSLog(@"item.badgeValue : %@", item.badgeValue);
-    
     [button setUnread:([FUIVerticalTabBarButton badgeCountForValue:item.badgeValue] > 0) ? YES : NO];
     [button setBadgeValue:item.badgeValue];
 }
