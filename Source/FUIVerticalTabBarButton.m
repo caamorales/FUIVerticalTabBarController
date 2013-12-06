@@ -94,6 +94,8 @@
         [self setUnread:NO];
         [self setAccessoryView:nil];
     }
+    
+    [self layoutSubviews];
 }
 
 - (void)setUnread:(BOOL)unread
@@ -149,15 +151,13 @@
 #endif
         
         CGRect frame = _badgeLabel.frame;
-        
-        NSLog(@"badgeSize.width : %f", badgeSize.width);
-        
+                
         badgeSize.width += kVerticalTabBarButtonMargin*2;
         frame.size = CGSizeMake(roundf(badgeSize.width), kVerticalTabBarButtonHeight);
         _badgeLabel.frame = frame;
     }
     
-    _badgeLabel.layer.borderColor = self.selected ? self.textLabel.highlightedTextColor.CGColor : _badgeTextColor.CGColor;
+    _badgeLabel.layer.borderColor = (self.highlighted || self.selected) ? self.textLabel.highlightedTextColor.CGColor : _badgeTextColor.CGColor;
 }
 
 @end
