@@ -13,11 +13,11 @@
 #define kAnimationStandardDuration 0.3
 
 static CGPoint panningHorizontalPosition;
-static NSMutableArray *_tabBarItemToObserve;
 
 @interface FUIVerticalTabBarController () <UIGestureRecognizerDelegate> {
     UIStatusBarStyle _originalStatusBarStyle;
 }
+@property (nonatomic, strong) NSMutableArray *keyPathsToObserve;
 @property (nonatomic, strong) UIView *statusBarBackground;
 @property (nonatomic) BOOL didSelect;
 @end
@@ -166,18 +166,18 @@ static NSMutableArray *_tabBarItemToObserve;
     return (indexPath && _selectedIndexPath.section == indexPath.section && _selectedIndexPath.row == indexPath.row) ? YES : NO;
 }
 
-- (NSArray *)tabBarItemKeyPathsToObserve
+- (NSArray *)keyPathsToObserve
 {
-    if (!_tabBarItemToObserve) {
-        _tabBarItemToObserve = [NSMutableArray arrayWithObject:@"badgeValue"];
+    if (!_keyPathsToObserve) {
+        _keyPathsToObserve = [NSMutableArray arrayWithObject:@"badgeValue"];
         
 #if __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_6_1
-        [_tabBarItemToObserve addObjectsFromArray:@[@"finishedUnselectedImage", @"finishedSelectedImage"]];
+        [_keyPathsToObserve addObjectsFromArray:@[@"finishedUnselectedImage", @"finishedSelectedImage"]];
 #else
-        [_tabBarItemToObserve addObjectsFromArray:@[@"image", @"selectedImage"]];
+        [_keyPathsToObserve addObjectsFromArray:@[@"image", @"selectedImage"]];
 #endif
     }
-    return _tabBarItemToObserve;
+    return _keyPathsToObserve;
 }
 
 
@@ -209,11 +209,9 @@ static NSMutableArray *_tabBarItemToObserve;
                 UITabBarItem *tabBarItem = vc.tabBarItem;
                 [items addObject:tabBarItem];
                 
-                for (NSString *keyPath in self.tabBarItemKeyPathsToObserve) {
+                for (NSString *keyPath in self.keyPathsToObserve) {
                     [tabBarItem addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
                     [UITabBarItem automaticallyNotifiesObserversForKey:keyPath];
-                    
-//                    [tabBarItem removeObserver:self forKeyPath:keyPath context:nil];
                 }
                 
                 UIViewController *controller = nil;
@@ -231,8 +229,6 @@ static NSMutableArray *_tabBarItemToObserve;
                 [controller.view addGestureRecognizer:panGesture];
                 
                 if (_sideShadow) [self renderShadowForControllerView:controller.view];
-                
-//                [self addChildViewController:controller];
             }
             [tabBarItems addObject:items];
         }
@@ -273,10 +269,8 @@ static NSMutableArray *_tabBarItemToObserve;
     }
     else if ([self viewControllerAtIndexPath:indexPath])
     {
-        // Adds the new view controller to hierarchy
+        // Selects the appropriate view controller to add
         UIViewController *selectedViewController = [self viewControllerAtIndexPath:indexPath];
-//        [self addChildViewController:selectedViewController];
-//        [selectedViewController didMoveToParentViewController:self];
         
         // Sets the expanded or contracted rectangle
         CGRect rect = CGRectZero;
@@ -298,6 +292,10 @@ static NSMutableArray *_tabBarItemToObserve;
         if (_statusBarBackground) [self.view insertSubview:selectedViewController.view belowSubview:_statusBarBackground];
         else [self.view addSubview:selectedViewController.view];
 
+        // Adds the new view controller to hierarchy
+        [self addChildViewController:selectedViewController];
+        [selectedViewController didMoveToParentViewController:self];
+        
         if ([self.delegate verticalTabBarControllerContractWhenSelecting:self] && !_didSelect) {
             _didSelect = YES;
             [self performSelector:@selector(contractMenu) withObject:nil afterDelay:0.2];
@@ -312,7 +310,7 @@ static NSMutableArray *_tabBarItemToObserve;
         }
         
         [previousViewController.view removeFromSuperview];
-//        [previousViewController removeFromParentViewController];
+        [previousViewController removeFromParentViewController];
 
         // Sets the new selected index
         _selectedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
@@ -607,14 +605,23 @@ static NSMutableArray *_tabBarItemToObserve;
 {
     _selectedIndexPath = [NSIndexPath indexPathForRow:-1 inSection:-1];
     
-    for (UIViewController *controller in self.childViewControllers) {
-        [controller removeFromParentViewController];
-        [controller.view removeFromSuperview];
+    for (NSArray *items in self.tabBar.items) {
+        for (UITabBarItem *item in items) {
+            for (NSString *keyPath in self.keyPathsToObserve) {
+                [item removeObserver:self forKeyPath:keyPath context:nil];
+            }
+        }
     }
     
-    [self setViewControllers:nil];
-    [self.tabBar setItems:nil];
+    for (UIViewController *controller in self.childViewControllers) {
+        NSLog(@"removing : %@", controller);
+        [controller.view removeFromSuperview];
+        [controller removeFromParentViewController];
+    }
     
+    self.viewControllers = nil;
+    self.tabBar.items = nil;
+
     if (_delegate && [_delegate respondsToSelector:@selector(verticalTabBarControllerDidReset:)]) {
         [_delegate verticalTabBarControllerDidReset:self];
     }
@@ -775,11 +782,7 @@ static NSMutableArray *_tabBarItemToObserve;
 
 - (void)dealloc
 {
-    for (UITabBarItem *item in _tabBar.items) {
-        for (NSString *keyPath in _tabBarItemToObserve) {
-            [item removeObserver:self forKeyPath:keyPath];
-        }
-    }
+    
 }
 
 @end
