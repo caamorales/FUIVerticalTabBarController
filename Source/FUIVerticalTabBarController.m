@@ -292,7 +292,7 @@ static CGPoint panningHorizontalPosition;
         if (_statusBarBackground) [self.view insertSubview:selectedViewController.view belowSubview:_statusBarBackground];
         else [self.view addSubview:selectedViewController.view];
 
-        // Adds the new view controller to hierarchy
+        // Adds the new view controller to the parent controller containment
         [self addChildViewController:selectedViewController];
         [selectedViewController didMoveToParentViewController:self];
         
@@ -309,6 +309,7 @@ static CGPoint panningHorizontalPosition;
             [_delegate verticalTabBarController:self willDeselectViewController:previousViewController];
         }
         
+        // Removes the previously selected view controller from the parent controller containment (if any)
         [previousViewController.view removeFromSuperview];
         [previousViewController removeFromParentViewController];
 
@@ -614,7 +615,6 @@ static CGPoint panningHorizontalPosition;
     }
     
     for (UIViewController *controller in self.childViewControllers) {
-        NSLog(@"removing : %@", controller);
         [controller.view removeFromSuperview];
         [controller removeFromParentViewController];
     }
