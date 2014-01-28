@@ -577,8 +577,8 @@ static CGPoint panningHorizontalPosition;
         [UIView animateWithDuration:0.01 delay:0
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
                          animations:^{_statusBarBackground.alpha = alpha;} completion:NULL];
-#endif
     }
+#endif
 }
 
 - (void)updateStatusBar
