@@ -110,6 +110,15 @@
     return _menuIcon;
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    
+    CGPoint location = [[[event allTouches] anyObject] locationInView:[UIApplication sharedApplication].keyWindow];
+    if(location.y > 0 && location.y < 20) {
+        [_verticalTabBarController shouldScrollToTop];
+    }
+}
 
 #pragma mark - FUIVerticalTabBarControllerDelegate Methods
 

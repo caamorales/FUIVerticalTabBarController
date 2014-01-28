@@ -75,6 +75,26 @@
 - (void)switchMenu:(id)sender;
 
 /**
+ * Call this method to manually trigger a tableView or collectionView for scrolling to the top.
+ * Since FUIVerticalTabBarController's child view controllers are not inheriting the status bar touch input for automagically scrolling to top, you must first capture the touch event on the status bar, and then call this method.
+ *
+ * @discussion
+ * A good and easy way of capturing the status bar touch, is by calling the following code directly into you app delegate implementation class:
+ *
+ *  - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+ *  {
+ *      [super touchesBegan:touches withEvent:event];
+ *
+ *      CGPoint location = [[[event allTouches] anyObject] locationInView:[UIApplication sharedApplication].keyWindow];
+ *      if(location.y > 0 && location.y < 20) {
+ *
+ *      [_verticalTabBarController statusBarTouched];
+ *      }
+ *  }
+ */
+- (void)shouldScrollToTop;
+
+/**
  * Removes all the content of the tar bar controller, including subviews and child view controllers in it.
  */
 - (void)reset;

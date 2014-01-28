@@ -26,8 +26,7 @@ static CGPoint panningHorizontalPosition;
 
 - (id)init
 {
-    if (self = [super init])
-    {
+    if (self = [super init]) {
         _selectedIndexPath = [NSIndexPath indexPathForRow:-1 inSection:-1];
     }
     return self;
@@ -373,6 +372,12 @@ static CGPoint panningHorizontalPosition;
     }
 }
 
+- (void)setStatusBarColor:(UIColor *)statusBarColor
+{
+    _statusBarColor = statusBarColor;
+    _statusBarBackground.backgroundColor = _statusBarColor;
+}
+
 
 #pragma mark - FUIVerticalTabBarController methods
 
@@ -557,13 +562,13 @@ static CGPoint panningHorizontalPosition;
 
 - (void)adjustStatusBarAlpha:(CGFloat)xPos
 {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
     if (xPos > _minimumWidth) {
         CGFloat menuWidth = roundf(_maximumWidth - _minimumWidth);
         CGFloat alpha = (_minimumWidth-xPos)/menuWidth;
         
         if (alpha < 0) alpha *= -1;
-        
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
+
         UIStatusBarStyle style = (alpha >= 0.5) ? UIStatusBarStyleLightContent : _originalStatusBarStyle;
         if ([UIApplication sharedApplication].statusBarStyle != style) {
             [self updateStatusBarStyle:style];
@@ -600,6 +605,33 @@ static CGPoint panningHorizontalPosition;
 {
     [_tabBar reloadData];
     [self.tabBar selectRowAtIndexPath:_selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+}
+
+- (void)shouldScrollToTop
+{
+    if (_expanded) {
+        return;
+    }
+    
+    UINavigationController *navigationController = (UINavigationController *)[self selectedViewController];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    
+    if ([[navigationController.viewControllers lastObject] isKindOfClass:[UITableViewController class]]) {
+        
+        UITableViewController *controller = [navigationController.viewControllers lastObject];
+        
+        if ([controller.tableView.dataSource tableView:controller.tableView numberOfRowsInSection:0] > 0) {
+            [controller.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        }
+    }
+    else if ([[navigationController.viewControllers lastObject] isKindOfClass:[UICollectionViewController class]]) {
+        
+        UICollectionViewController *controller = [navigationController.viewControllers lastObject];
+        
+        if ([controller.collectionView.dataSource collectionView:controller.collectionView numberOfItemsInSection:0] > 0) {
+            [controller.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+        }
+    }
 }
 
 - (void)reset
