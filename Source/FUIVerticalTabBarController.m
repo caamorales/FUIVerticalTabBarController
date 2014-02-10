@@ -614,24 +614,36 @@ static CGPoint panningHorizontalPosition;
     }
     
     UINavigationController *navigationController = (UINavigationController *)[self selectedViewController];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    UIViewController *controller = [navigationController.viewControllers lastObject];
     
-    if ([[navigationController.viewControllers lastObject] isKindOfClass:[UITableViewController class]]) {
+    UIScrollView *scrollView = nil;
+    
+    if ([controller isKindOfClass:[UITableViewController class]]) {
         
-        UITableViewController *controller = [navigationController.viewControllers lastObject];
+        UITableViewController *tableController = (UITableViewController *)controller;
+        scrollView = tableController.tableView;
+    }
+    else if ([controller isKindOfClass:[UICollectionViewController class]]) {
         
-        if ([controller.tableView.dataSource tableView:controller.tableView numberOfRowsInSection:0] > 0) {
-            [controller.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        UICollectionViewController *collectionController = (UICollectionViewController *)controller;
+        scrollView = collectionController.collectionView;
+    }
+    else if ([controller isKindOfClass:[UIViewController class]]) {
+        
+        for (UIView *view in controller.view.subviews) {
+            
+            if ([view isKindOfClass:[UITableView class]]) {
+                scrollView = (UITableView *)view;
+                break;
+            }
+            else if ([view isKindOfClass:[UICollectionView class]]) {
+                scrollView = (UICollectionView *)view;
+                break;
+            }
         }
     }
-    else if ([[navigationController.viewControllers lastObject] isKindOfClass:[UICollectionViewController class]]) {
-        
-        UICollectionViewController *controller = [navigationController.viewControllers lastObject];
-        
-        if ([controller.collectionView.dataSource collectionView:controller.collectionView numberOfItemsInSection:0] > 0) {
-            [controller.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
-        }
-    }
+    
+    [scrollView setContentOffset:CGPointZero animated:YES];
 }
 
 - (void)reset
